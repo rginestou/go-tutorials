@@ -1,0 +1,34 @@
+:not(pre)>code {
+    background-color: #f5f6f7;
+    border-radius: 3px;
+    box-shadow: 0 0 0 1px rgba(9, 45, 66, .13);
+    color: #eb5a46;
+    padding: 1px 3px;
+    margin: -1px 2px;
+}
+
+ul li ul li {
+    margin-left: 40px;
+}
+
+li a {
+    color: gray;
+}
+
+#toc {
+    font-size: 0.9em;
+    position: fixed;
+    top: 50px;
+    left: 70px;
+    /* position: -webkit-sticky;
+    position: sticky; */
+    overflow-y: hidden;
+}
+
+h2 {
+    margin-top: 1.8em;
+}
+
+h3 {
+    margin-top: 0.8em;
+}

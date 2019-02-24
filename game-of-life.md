@@ -2,9 +2,11 @@
 
 https://pilsniak.com/wp-content/uploads/2017/04/golang.jpg
 
-=== CONTENT ===
+=== TITLE ===
 
-# Game Of Life with Go
+Game Of Life with Go
+
+=== CONTENT ===
 
 ## Préparation
 
@@ -546,14 +548,14 @@ Il est donc possible depuis l'intérieur de la boucle infinie de mettre à jour 
 Pour afficher les cellules, il te faudra le package _imdraw_, qui s'utilise comme suit :
 
 ```go
-\\ Initialization
+// Initialization
 imd := imdraw.New(nil)
 imd.Clear()
 
-\\ Set drawing color
+// Set drawing color
 imd.Color = colornames.Black
 
-\\ Add a rectangle between the points (10, 10) and (20, 20)
+// Add a rectangle between the points (10, 10) and (20, 20)
 imd.Push(pixel.V(10.0, 10.0))
 imd.Push(pixel.V(20.0, 20.0))
 imd.Rectangle(0)

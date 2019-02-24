@@ -19,8 +19,16 @@ type section struct {
 
 type layout struct {
 	Sections []section
+	Title    string
 	Image    string
 }
+
+const (
+	writeContent int = iota
+	writeGuide
+	writeTitle
+	writeImage
+)
 
 func main() {
 	t, _ := template.ParseFiles("template.html")
@@ -38,38 +46,46 @@ func main() {
 				var l layout
 				sections := make([]section, 0)
 				s := -1
-				writeContent := true
-				writeImage := false
+				writting := writeContent
 
 				c, _ := ioutil.ReadFile(name)
 				scanner := bufio.NewScanner(strings.NewReader(string(c)))
 				for scanner.Scan() {
 					txt := scanner.Text()
 					if txt == "=== CONTENT ===" {
+						writting = writeContent
 						sections = append(sections, section{})
 						s++
-						writeContent = true
-						writeImage = false
 						continue
 					}
 					if txt == "=== GUIDE ===" {
-						writeContent = false
-						writeImage = false
+						writting = writeGuide
+						continue
+					}
+					if txt == "=== TITLE ===" {
+						writting = writeTitle
 						continue
 					}
 					if txt == "=== IMAGE ===" {
-						writeImage = true
+						writting = writeImage
 						continue
 					}
 
-					if writeImage {
-						l.Image += txt
+					if writting == writeContent {
+						sections[s].Content += txt + "\n"
 						continue
 					}
-					if writeContent {
-						sections[s].Content += txt + "\n"
-					} else {
+					if writting == writeGuide {
 						sections[s].Guide += txt + "\n"
+						continue
+					}
+					if writting == writeTitle {
+						l.Title += txt
+						continue
+					}
+					if writting == writeImage {
+						l.Image += txt
+						continue
 					}
 				}
 

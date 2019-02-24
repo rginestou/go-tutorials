@@ -6,18 +6,9 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>Go Tutorials</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="https://unpkg.com/mustard-ui@latest/dist/css/mustard-ui.min.css">
+	<link rel="stylesheet" href="assets/mustard.css">
 	<link rel="stylesheet" href="assets/prism.css">
-	<style>
-		:not(pre)>code {
-			background-color: #f5f6f7;
-			border-radius: 3px;
-			box-shadow: 0 0 0 1px rgba(9, 45, 66, .13);
-			color: #eb5a46;
-			padding: 1px 3px;
-			margin: -1px 2px;
-		}
-	</style>
+	<link rel="stylesheet" href="assets/index.css">
 </head>
 
 <body>
@@ -25,12 +16,15 @@
 		<img src="https://pilsniak.com/wp-content/uploads/2017/04/golang.jpg" style="height:100%;">
 	</div>
 
+	<div id="toc"></div>
+
 	<section class="section-secondary">
 		<div class="container container-small" style="width:700px">
-			
 			<h1>Game Of Life with Go</h1>
 
-<h2>Préparation</h2>
+			<div id="contents">
+				
+				<h2>Préparation</h2>
 
 <h3>Installation de Go v11</h3>
 
@@ -48,19 +42,19 @@ sudo apt install golang-1.11
 <p>Si tu utilises un autre OS, tu peux toujours suivre les instructions d&rsquo;installation sur le <a href="https://golang.org/doc/install">site officiel</a>.</p>
 
 
-			
-			<div class="card" style="margin:35px 0">
-				<h3 class="card-title">Guide</h3>
+				
+				<div class="card" style="margin:35px 0">
+					<h3 class="card-title">Guide</h3>
 
-				<ul>
+					<ul>
 <li>Exécute la commande <code>go version</code> et vérifie le résultat (<code>go version go1.11.2 linux/amd64</code>)</li>
 </ul>
 
 
-			</div>
-			
-			
-			<h3>Environnement de développement</h3>
+				</div>
+				
+				
+				<h3>Environnement de développement</h3>
 
 <p>L&rsquo;éditeur de code recommandé pour Go est Visual Studio Code. Télécharge-le depuis le <a href="https://code.visualstudio.com/">site officiel</a>.</p>
 
@@ -69,9 +63,9 @@ sudo apt install golang-1.11
 <p><em>ProTip</em> : Pour pouvoir rapidement tester des programmes simples en Go, tu peux visiter <a href="https://play.golang.org/">The Go Playground</a> qui te permet de compiler du code en ligne.</p>
 
 
-			
-			
-			<h2>1 - Les Fondations</h2>
+				
+				
+				<h2>1 - Les Fondations</h2>
 
 <h3>Hello, World!</h3>
 
@@ -98,11 +92,11 @@ func main() {
 </ul>
 
 
-			
-			<div class="card" style="margin:35px 0">
-				<h3 class="card-title">Guide</h3>
+				
+				<div class="card" style="margin:35px 0">
+					<h3 class="card-title">Guide</h3>
 
-				<ul>
+					<ul>
 <li>Crée un répertoire de travail</li>
 <li>Ajoute un fichier <code>main.go</code></li>
 <li>Tape le code permettant d&rsquo;afficher &ldquo;Hello, World!&rdquo;</li>
@@ -110,10 +104,10 @@ func main() {
 </ul>
 
 
-			</div>
-			
-			
-			<h3>Variables &amp; Types</h3>
+				</div>
+				
+				
+				<h3>Variables &amp; Types</h3>
 
 <h4>Types basiques</h4>
 
@@ -185,11 +179,11 @@ Pour construire une <em>map</em> dont les clés sont des <code>string</code> et 
 </code></pre>
 
 
-			
-			<div class="card" style="margin:35px 0">
-				<h3 class="card-title">Guide</h3>
+				
+				<div class="card" style="margin:35px 0">
+					<h3 class="card-title">Guide</h3>
 
-				<ul>
+					<ul>
 <li>Crée plusieurs variables de types différents</li>
 <li>Affiche ces variables grâce au package fmt</li>
 <li>Crée un tableau de nombres flottants sur 64 bits de taille 40</li>
@@ -198,10 +192,10 @@ Pour construire une <em>map</em> dont les clés sont des <code>string</code> et 
 </ul>
 
 
-			</div>
-			
-			
-			<h3>Conditions, Boucles et Fonctions</h3>
+				</div>
+				
+				
+				<h3>Conditions, Boucles et Fonctions</h3>
 
 <h4>Conditions</h4>
 
@@ -264,20 +258,20 @@ func h(x int) {
 </code></pre>
 
 
-			
-			<div class="card" style="margin:35px 0">
-				<h3 class="card-title">Guide</h3>
+				
+				<div class="card" style="margin:35px 0">
+					<h3 class="card-title">Guide</h3>
 
-				<ul>
+					<ul>
 <li>Utilise les différents types de boucles sur des exemples basiques
 Définis des fonctions simples à plusieurs paramètres et valeurs de retour</li>
 </ul>
 
 
-			</div>
-			
-			
-			<h3>Structures</h3>
+				</div>
+				
+				
+				<h3>Structures</h3>
 
 <p>Go n&rsquo;est pas, à strictement parler, un langage orienté objet (pas de classes ou d&rsquo;héritage par exemple), mais propose un ensemble de concepts qui donnent au langage une saine et élégante apparence orienté objet.</p>
 
@@ -318,21 +312,21 @@ p.happyBirthday()
 </code></pre>
 
 
-			
-			<div class="card" style="margin:35px 0">
-				<h3 class="card-title">Guide</h3>
+				
+				<div class="card" style="margin:35px 0">
+					<h3 class="card-title">Guide</h3>
 
-				<ul>
+					<ul>
 <li>Crée une structure simple, possédant des attributs de plusieurs types</li>
 <li>Construis quelques méthodes (getters, setters, autres) qui complètent la structure</li>
 <li>Instancier la structure et faire usage des différentes méthodes codées précédement</li>
 </ul>
 
 
-			</div>
-			
-			
-			<h2>2 - La Grille</h2>
+				</div>
+				
+				
+				<h2>2 - La Grille</h2>
 
 <h3>Mise en place</h3>
 
@@ -342,11 +336,11 @@ Tu peux stocker cette grille dans une structure <code>board</code> contenant la 
 <p>En Go, tu peux découper ton code en plusieurs fichiers. Dès lors que ces fichiers se situent <em>dans le même répertoire</em> et qu&rsquo;ils arborent la meme ligne <code>package &lt;mon-package&gt;</code> en tête du fichier, ces fichiers partagent les mêmes définitions (comme si tu avais tout codé dans le même fichier). Pas besoin de <code>.h</code> !</p>
 
 
-			
-			<div class="card" style="margin:35px 0">
-				<h3 class="card-title">Guide</h3>
+				
+				<div class="card" style="margin:35px 0">
+					<h3 class="card-title">Guide</h3>
 
-				<ul>
+					<ul>
 <li>Crée un fichier <code>board.go</code> dans le même répertoire</li>
 <li>Crée une structure <code>type board struct {}</code></li>
 <li>Ajoute les attributs de largeur <code>width</code> et de hauteur <code>height</code> de la matrice, de type <code>int</code></li>
@@ -354,10 +348,10 @@ Tu peux stocker cette grille dans une structure <code>board</code> contenant la 
 </ul>
 
 
-			</div>
-			
-			
-			<h3>Création</h3>
+				</div>
+				
+				
+				<h3>Création</h3>
 
 <h4>Fonction de création de la grille de jeu</h4>
 
@@ -380,11 +374,11 @@ Tu peux stocker cette grille dans une structure <code>board</code> contenant la 
 <p>Pour construire une matrice de taille <em>NxM</em>, il te faut construire le tableau de tableau d&rsquo;abord de taille <em>N</em>, puis construire chacun des <em>N</em> tableaux de taille <em>M</em>.</p>
 
 
-			
-			<div class="card" style="margin:35px 0">
-				<h3 class="card-title">Guide</h3>
+				
+				<div class="card" style="margin:35px 0">
+					<h3 class="card-title">Guide</h3>
 
-				<ul>
+					<ul>
 <li>Crée la fonction <code>newBoard</code></li>
 <li>Instancie la variable contenant la grille</li>
 <li>Construis la matrice de cellules</li>
@@ -392,10 +386,10 @@ Tu peux stocker cette grille dans une structure <code>board</code> contenant la 
 </ul>
 
 
-			</div>
-			
-			
-			<h3>Méthodes</h3>
+				</div>
+				
+				
+				<h3>Méthodes</h3>
 
 <p>Pour interagir avec la <code>board</code>, il faudra mettre en place plusieurs méthodes rattachées à la <code>board</code> :</p>
 
@@ -411,32 +405,32 @@ func (b *board) set(i, j int, v bool)
 </code></pre>
 
 
-			
-			<div class="card" style="margin:35px 0">
-				<h3 class="card-title">Guide</h3>
+				
+				<div class="card" style="margin:35px 0">
+					<h3 class="card-title">Guide</h3>
 
-				<ul>
+					<ul>
 <li>Définis les méthodes (en laissant leur contenu vide)</li>
 <li>Complète le contenu de la méthode <code>at</code></li>
 <li>Complète le contenu de la méthode <code>set</code></li>
 </ul>
 
 
-			</div>
-			
-			
-			<h3>Instanciation</h3>
+				</div>
+				
+				
+				<h3>Instanciation</h3>
 
 <p>Il est temps d&rsquo;utiliser la Grille !</p>
 
 <p>L&rsquo;objet <code>board</code> peut être instancié dans la fonction <code>main</code> de manière simple grâce à la fonction <code>newBoard</code> codée précédemment.</p>
 
 
-			
-			<div class="card" style="margin:35px 0">
-				<h3 class="card-title">Guide</h3>
+				
+				<div class="card" style="margin:35px 0">
+					<h3 class="card-title">Guide</h3>
 
-				<ul>
+					<ul>
 <li>Définis deux variables entières <code>width</code> et <code>height</code> au début de la fonction main en leur donnant une valeur</li>
 <li>Crée un objet board à partir des dimensions de la grille de jeu</li>
 <li>Utilise une combinaison de <code>board.at(i, j)</code> et <code>board.set(i, j, v)</code> pour tester ton implémentation</li>
@@ -444,10 +438,10 @@ func (b *board) set(i, j int, v bool)
 </ul>
 
 
-			</div>
-			
-			
-			<h3>Effets de bord</h3>
+				</div>
+				
+				
+				<h3>Effets de bord</h3>
 
 <p>Le jeu de la vie se déroule étape par étape, en simulant à chaque itération le nouvel état de la grille à partir du précédent. Une première observations peut être faite :</p>
 
@@ -460,20 +454,20 @@ func (b *board) set(i, j int, v bool)
 <p>Si la grille visible est de taille <em>NxM</em>, la grille en mémoire fait <em>(N+2)x(M+2)</em>.</p>
 
 
-			
-			<div class="card" style="margin:35px 0">
-				<h3 class="card-title">Guide</h3>
+				
+				<div class="card" style="margin:35px 0">
+					<h3 class="card-title">Guide</h3>
 
-				<ul>
+					<ul>
 <li>Changer les dimensions de la grille créée pour prendre en compte le bord dans <code>newBoard</code></li>
 <li>Changer les fonctions <code>board.set</code> et <code>board.at</code> en conséquences</li>
 </ul>
 
 
-			</div>
-			
-			
-			<h3>Swap de la Grille</h3>
+				</div>
+				
+				
+				<h3>Swap de la Grille</h3>
 
 <p>Une seconde observation est la suivante :</p>
 
@@ -485,11 +479,11 @@ func (b *board) set(i, j int, v bool)
 Ce système de va-et-vient est plus optimal.</p>
 
 
-			
-			<div class="card" style="margin:35px 0">
-				<h3 class="card-title">Guide</h3>
+				
+				<div class="card" style="margin:35px 0">
+					<h3 class="card-title">Guide</h3>
 
-				<ul>
+					<ul>
 <li>Ajoute un attribut <code>swap</code> à la structure <code>board</code> qui désigne l&rsquo;indice (0 ou 1) de la grille couramment dessinée</li>
 <li>Change le type de la grille pour <code>[2][][]bool</code> (<code>grid</code> est un tableau de deux matrices)</li>
 <li>Corrige la fonction <code>newBoard</code> pour prendre en compte l&rsquo;ajout d&rsquo;une dimension à la grille</li>
@@ -497,10 +491,10 @@ Ce système de va-et-vient est plus optimal.</p>
 </ul>
 
 
-			</div>
-			
-			
-			<h2>3 - La Logique</h2>
+				</div>
+				
+				
+				<h2>3 - La Logique</h2>
 
 <h3>Comptage des voisins</h3>
 
@@ -513,40 +507,40 @@ Ce système de va-et-vient est plus optimal.</p>
 <p>De part la prise en compte des effets de bords auparavant, il n&rsquo;est pas utile de tester ces conditions dans la fonction de comptage, tu peux supposer que les cases mémoire auxquelles tu accèdes sont valides !</p>
 
 
-			
-			<div class="card" style="margin:35px 0">
-				<h3 class="card-title">Guide</h3>
+				
+				<div class="card" style="margin:35px 0">
+					<h3 class="card-title">Guide</h3>
 
-				<ul>
+					<ul>
 <li>Crée une fonction <code>(b *board) countNeighbors(i, j int) int</code> qui compte les voisins autour d&rsquo;une cellule <em>(i, j)</em></li>
 <li>Implémente la logique de cette fonction</li>
 </ul>
 
 
-			</div>
-			
-			
-			<h3>État des cellules</h3>
+				</div>
+				
+				
+				<h3>État des cellules</h3>
 
 <p>Consulte les <a href="https://fr.wikipedia.org/wiki/Jeu_de_la_vie">règles du jeu</a> qui s&rsquo;appliquent à chacune des cellules de la Grille.</p>
 
 <p>Il est désormais temps d&rsquo;implémenter ces règles, sachant la valeur d&rsquo;une case et le nombre de ces voisins.</p>
 
 
-			
-			<div class="card" style="margin:35px 0">
-				<h3 class="card-title">Guide</h3>
+				
+				<div class="card" style="margin:35px 0">
+					<h3 class="card-title">Guide</h3>
 
-				<ul>
+					<ul>
 <li>Crée une fonction <code>rule(n int, v bool) bool</code> qui, sachant le nombre de voisins <em>n</em> et l&rsquo;état d&rsquo;une cellule <em>v</em>, retourne le nouvel état de cette cellule</li>
 <li>Implémente les règles du jeu de manière succinte</li>
 </ul>
 
 
-			</div>
-			
-			
-			<h3>Mise à jour de la Grille</h3>
+				</div>
+				
+				
+				<h3>Mise à jour de la Grille</h3>
 
 <p>Cette étape consiste à compléter la méthode <code>update</code> de la <code>board</code>.
 Cette méthode est appelée à chaque itération du jeu de la vie.</p>
@@ -556,41 +550,41 @@ Cette méthode est appelée à chaque itération du jeu de la vie.</p>
 <p>Par la suite, on supposera que la grille d&rsquo;indice <code>b.swap</code>est la grille actuellement affichée, et que la grille d&rsquo;indice <code>1-b.swap</code> est la grille qui doit être calculée pour la prochaine itération.</p>
 
 
-			
-			<div class="card" style="margin:35px 0">
-				<h3 class="card-title">Guide</h3>
+				
+				<div class="card" style="margin:35px 0">
+					<h3 class="card-title">Guide</h3>
 
-				<ul>
+					<ul>
 <li>Réinitialise à <code>false</code> l&rsquo;état de la nouvelle grille</li>
 <li>Parcours les cellules pertinentes de la grille actuelle, compte le nombre de voisin de chacune d&rsquo;entre elle et mets le résultat de la fonction <code>rule</code> dans la nouvelle grille</li>
 <li>Echange les grilles (attribut <code>b.swap</code>)</li>
 </ul>
 
 
-			</div>
-			
-			
-			<h3>Configuration de la grille initiale</h3>
+				</div>
+				
+				
+				<h3>Configuration de la grille initiale</h3>
 
 <p>La grille de jeu est pour le moment vide. Le Jeu de la Vie prend tout son intérêt lorsqu&rsquo;on initialise l&rsquo;état du jeu avec certaines structures particulières (un <a href="https://fr.wikipedia.org/wiki/Planeur_(jeu_de_la_vie">planeur</a>) par exemple).</p>
 
 <p>Décris une configuration initiale de la grille avec les motifs de ton choix.</p>
 
 
-			
-			<div class="card" style="margin:35px 0">
-				<h3 class="card-title">Guide</h3>
+				
+				<div class="card" style="margin:35px 0">
+					<h3 class="card-title">Guide</h3>
 
-				<ul>
+					<ul>
 <li>Renseigne toi sur les motifs intéressants du jeu de la vie</li>
 <li>Utilise la méthode <code>board.set</code> pour les implémenter depuis la fonction <code>main</code></li>
 </ul>
 
 
-			</div>
-			
-			
-			<h2>4 - L&rsquo;affichage graphique</h2>
+				</div>
+				
+				
+				<h2>4 - L&rsquo;affichage graphique</h2>
 
 <h3>Installation des dépendances graphiques</h3>
 
@@ -617,9 +611,9 @@ Cette méthode est appelée à chaque itération du jeu de la vie.</p>
 </code></pre>
 
 
-			
-			
-			<h3>Ouvrir une fenêtre</h3>
+				
+				
+				<h3>Ouvrir une fenêtre</h3>
 
 <p>L&rsquo;ouverture d&rsquo;une fenêtre graphique demande toujours un certain nombre de lignes de code.</p>
 
@@ -650,11 +644,11 @@ pixelgl.Run(func() {
 </code></pre>
 
 
-			
-			<div class="card" style="margin:35px 0">
-				<h3 class="card-title">Guide</h3>
+				
+				<div class="card" style="margin:35px 0">
+					<h3 class="card-title">Guide</h3>
 
-				<ul>
+					<ul>
 <li>Crée un fichier <code>window.go</code> dans lequel les fonctions graphiques seront codées</li>
 <li>Entoure la fonction <code>pixelgl.Run</code> de ta propre fonction <code>run</code> qui prenne en paramètre <code>b</code> un pointeur vers la <code>board</code>, et <code>blockSize</code> la taille en pixel d&rsquo;une cellule affichée à l&rsquo;écran</li>
 <li>Appelle ta fonction <code>run</code> depuis <code>main.go</code></li>
@@ -662,24 +656,24 @@ pixelgl.Run(func() {
 </ul>
 
 
-			</div>
-			
-			
-			<h3>Afficher la Grille</h3>
+				</div>
+				
+				
+				<h3>Afficher la Grille</h3>
 
 <p>La grille est accessible à l&rsquo;intérieur de la fonction <code>run</code> car elle y a été passée en paramètre.
 Il est donc possible depuis l&rsquo;intérieur de la boucle infinie de mettre à jour la <code>board</code>, puis d&rsquo;afficher la grille actuelle cellule par cellule.</p>
 
 <p>Pour afficher les cellules, il te faudra le package <em>imdraw</em>, qui s&rsquo;utilise comme suit :</p>
 
-<pre><code class="language-go">\\ Initialization
+<pre><code class="language-go">// Initialization
 imd := imdraw.New(nil)
 imd.Clear()
 
-\\ Set drawing color
+// Set drawing color
 imd.Color = colornames.Black
 
-\\ Add a rectangle between the points (10, 10) and (20, 20)
+// Add a rectangle between the points (10, 10) and (20, 20)
 imd.Push(pixel.V(10.0, 10.0))
 imd.Push(pixel.V(20.0, 20.0))
 imd.Rectangle(0)
@@ -689,11 +683,11 @@ imd.Draw(win)
 </code></pre>
 
 
-			
-			<div class="card" style="margin:35px 0">
-				<h3 class="card-title">Guide</h3>
+				
+				<div class="card" style="margin:35px 0">
+					<h3 class="card-title">Guide</h3>
 
-				<ul>
+					<ul>
 <li>Crée l&rsquo;objet <code>imd</code> avant l&rsquo;entrée dans la boucle infinie</li>
 <li>Appelle la méthode <code>update</code> de la <code>board</code> avant d&rsquo;afficher les cellules</li>
 <li><code>Clear</code> l&rsquo;afficheur avant de dessiner les cellules</li>
@@ -702,10 +696,10 @@ imd.Draw(win)
 </ul>
 
 
-			</div>
-			
-			
-			<h2>5 - Aller plus loin</h2>
+				</div>
+				
+				
+				<h2>5 - Aller plus loin</h2>
 
 <h3>Remplissage aléatoire</h3>
 
@@ -721,11 +715,11 @@ imd.Draw(win)
 <p>On pourra ensuite utiliser la fonction <code>rand.Float32()</code> dans l&rsquo;optique de générer des booléens aléatoires.</p>
 
 
-			
-			<div class="card" style="margin:35px 0">
-				<h3 class="card-title">Guide</h3>
+				
+				<div class="card" style="margin:35px 0">
+					<h3 class="card-title">Guide</h3>
 
-				<ul>
+					<ul>
 <li>Crée une méthode <code>func (b *board) randomInit()</code> dans <code>board.go</code></li>
 <li>Initialise le générateur aléatoire</li>
 <li>Parcours les <em>NxM</em> cellules de la grille et attribue leur un booléen aléatoire</li>
@@ -733,10 +727,10 @@ imd.Draw(win)
 </ul>
 
 
-			</div>
-			
-			
-			<h3>Multithreading</h3>
+				</div>
+				
+				
+				<h3>Multithreading</h3>
 
 <p>Go est aussi connu pour sa gestion simple et puissante de la concurrence. Il est en effet très simple d&rsquo;exécuter plusieurs parties de son code en parallèle, à l&rsquo;aide des <a href="https://gobyexample.com/goroutines">goroutines</a>, qui sont une alternative très légères aux <em>threads</em>.</p>
 
@@ -778,11 +772,11 @@ func main() {
 <p>Afin d&rsquo;accélérer le calcul du nouvel état de la grille, il est intéressant de mettre à jour les lignes de la grille en parallèle en lançant <em>N</em> goroutines, puis d&rsquo;attendre la fin de tous les calculs avant de passer à la suite.</p>
 
 
-			
-			<div class="card" style="margin:35px 0">
-				<h3 class="card-title">Guide</h3>
+				
+				<div class="card" style="margin:35px 0">
+					<h3 class="card-title">Guide</h3>
 
-				<ul>
+					<ul>
 <li>Crée une méthode <code>func (b *board) updateRow(ch chan int, i int)</code> qui prend en paramètre un channel entier, et le numéro de la ligne à mettre à jour</li>
 <li>Déplace le code de mise à jour de la ligne de la méthode <code>update</code> dans cette nouvelle méthode</li>
 <li>Signalise la fin du calcul de la ligne en envoyant un entier quelconque dans le channel (<code>ch &lt;- 0</code>)</li>
@@ -792,10 +786,10 @@ func main() {
 </ul>
 
 
-			</div>
-			
-			
-			<h3>Tests</h3>
+				</div>
+				
+				
+				<h3>Tests</h3>
 
 <p>L&rsquo;un des avantages du langage Go est qu&rsquo;il n&rsquo;est pas qu&rsquo;un simple langage avec son compilateur. Go est fourni avec de nombreux outils (la commande <code>go</code> les liste). Un de ces outils est un pipeline de tests automatiques.</p>
 
@@ -839,21 +833,23 @@ Une fonction de test possible est la suivante :</p>
 <p>Depuis Visual Studio Code, l&rsquo;intégration avancée du langage Go permet également de lancer un test en particulier en cliquant sur le lien <code>run test</code> qui apparaît en haut de chaque fonction de test.</p>
 
 
-			
-			<div class="card" style="margin:35px 0">
-				<h3 class="card-title">Guide</h3>
+				
+				<div class="card" style="margin:35px 0">
+					<h3 class="card-title">Guide</h3>
 
-				<ul>
+					<ul>
 <li>Teste les fonctions de ton choix</li>
 </ul>
 
 
+				</div>
+				
+				
 			</div>
-			
-			
 		</div>
 	</section>
 
+	<script src="assets/toc.js"></script>
 	<script src="assets/prism.js"></script>
 </body>
 
