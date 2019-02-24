@@ -13,13 +13,18 @@ ul li ul li {
 
 li a {
     color: gray;
+    font-weight: bold;
+}
+
+#toc ul li ul li a {
+    font-weight: normal;
 }
 
 #toc {
     font-size: 0.9em;
     position: fixed;
-    top: 50px;
-    left: 70px;
+    top: 40px;
+    left: 40px;
     /* position: -webkit-sticky;
     position: sticky; */
     overflow-y: hidden;
