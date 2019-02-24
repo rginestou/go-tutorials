@@ -1,3 +1,7 @@
+=== IMAGE ===
+
+https://pilsniak.com/wp-content/uploads/2017/04/golang.jpg
+
 === CONTENT ===
 
 # Game Of Life
@@ -7,9 +11,10 @@
 Lorem Ipsum **bold** _italic_
 
 ```go
-func f(x int) {
-
-    }
+type section struct {
+	Content string
+	Guide   string
+}
 ```
 
 === GUIDE ===
@@ -25,7 +30,7 @@ Lorem Ipsum **bold** _italic_
 ```go
 func f(x int) {
 
-    }
+}
 ```
 
 === GUIDE ===

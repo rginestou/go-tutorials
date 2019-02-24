@@ -12,21 +12,55 @@
 
 <body>
 	<div style="margin:0 auto;height:250px">
-		<img src="{{.Image}}" style="height:100%;">
+		<img src="https://pilsniak.com/wp-content/uploads/2017/04/golang.jpg" style="height:100%;">
 	</div>
 
 	<section class="section-secondary">
 		<div class="container container-small" style="width:700px">
-			{{range .Sections}}
-			{{.Content}}
+			
+			<h1>Game Of Life</h1>
+
+<h2>Section 1</h2>
+
+<p>Lorem Ipsum <strong>bold</strong> <em>italic</em></p>
+
+<pre><code class="language-go">type section struct {
+	Content string
+	Guide   string
+}
+</code></pre>
+
 
 			<div class="card" style="margin:35px 0">
 				<h3 class="card-title">Guide</h3>
 
-				{{.Guide}}
+				<ul>
+<li>Do it</li>
+<li><em>Don&rsquo;t</em></li>
+</ul>
+
 
 			</div>
-			{{end}}
+			
+			<p>Lorem Ipsum <strong>bold</strong> <em>italic</em></p>
+
+<pre><code class="language-go">func f(x int) {
+
+}
+</code></pre>
+
+
+			<div class="card" style="margin:35px 0">
+				<h3 class="card-title">Guide</h3>
+
+				<ul>
+<li>Do it</li>
+<li><em>Don&rsquo;t</em></li>
+</ul>
+
+
+			</div>
+			
 		</div>
 	</section>
 
