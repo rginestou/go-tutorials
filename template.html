@@ -8,6 +8,16 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="https://unpkg.com/mustard-ui@latest/dist/css/mustard-ui.min.css">
 	<link rel="stylesheet" href="assets/prism.css">
+	<style>
+		:not(pre)>code {
+			background-color: #f5f6f7;
+			border-radius: 3px;
+			box-shadow: 0 0 0 1px rgba(9, 45, 66, .13);
+			color: #eb5a46;
+			padding: 1px 3px;
+			margin: -1px 2px;
+		}
+	</style>
 </head>
 
 <body>
@@ -20,12 +30,14 @@
 			{{range .Sections}}
 			{{.Content}}
 
+			{{if .Guide}}
 			<div class="card" style="margin:35px 0">
 				<h3 class="card-title">Guide</h3>
 
 				{{.Guide}}
 
 			</div>
+			{{end}}
 			{{end}}
 		</div>
 	</section>

@@ -8,6 +8,16 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="https://unpkg.com/mustard-ui@latest/dist/css/mustard-ui.min.css">
 	<link rel="stylesheet" href="assets/prism.css">
+	<style>
+		:not(pre)>code {
+			background-color: #f5f6f7;
+			border-radius: 3px;
+			box-shadow: 0 0 0 1px rgba(9, 45, 66, .13);
+			color: #eb5a46;
+			padding: 1px 3px;
+			margin: -1px 2px;
+		}
+	</style>
 </head>
 
 <body>
@@ -18,48 +28,828 @@
 	<section class="section-secondary">
 		<div class="container container-small" style="width:700px">
 			
-			<h1>Game Of Life</h1>
+			<h1>Game Of Life with Go</h1>
 
-<h2>Section 1</h2>
+<h2>Préparation</h2>
 
-<p>Lorem Ipsum <strong>bold</strong> <em>italic</em></p>
+<h3>Installation de Go v11</h3>
 
-<pre><code class="language-go">type section struct {
-	Content string
-	Guide   string
-}
+<p>Sous Ubuntu, pour installer la dernière version de Go, tu peux utiliser un <em>ppa</em> :</p>
+
+<pre><code>sudo add-apt-repository ppa:gophers/archive
+sudo apt update
+sudo apt install golang-1.11
 </code></pre>
 
+<p>Ajoute ensuite la ligne suivante à ton .bashrc (ou ton .zshrc si tu utilises zsh) :</p>
 
+<p><code>export PATH=$PATH:/usr/lib/go-1.11/bin:$HOME/go/bin</code></p>
+
+<p>Si tu utilises un autre OS, tu peux toujours suivre les instructions d&rsquo;installation sur le <a href="https://golang.org/doc/install">site officiel</a>.</p>
+
+
+			
 			<div class="card" style="margin:35px 0">
 				<h3 class="card-title">Guide</h3>
 
 				<ul>
-<li>Do it</li>
-<li><em>Don&rsquo;t</em></li>
+<li>Exécute la commande <code>go version</code> et vérifie le résultat (<code>go version go1.11.2 linux/amd64</code>)</li>
 </ul>
 
 
 			</div>
 			
-			<p>Lorem Ipsum <strong>bold</strong> <em>italic</em></p>
+			
+			<h3>Environnement de développement</h3>
 
-<pre><code class="language-go">func f(x int) {
+<p>L&rsquo;éditeur de code recommandé pour Go est Visual Studio Code. Télécharge-le depuis le <a href="https://code.visualstudio.com/">site officiel</a>.</p>
 
+<p>Il te faudra aussi installer l&rsquo;extension <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode.Go"><strong>Go</strong></a> pour VSCode.</p>
+
+<p><em>ProTip</em> : Pour pouvoir rapidement tester des programmes simples en Go, tu peux visiter <a href="https://play.golang.org/">The Go Playground</a> qui te permet de compiler du code en ligne.</p>
+
+
+			
+			
+			<h2>1 - Les Fondations</h2>
+
+<h3>Hello, World!</h3>
+
+<p>Voici les lignes de codes du programme &ldquo;Hello World&rdquo; en Go :</p>
+
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func main() {
+	fmt.Println(&quot;Hello, World!&quot;)
 }
 </code></pre>
 
+<p>Tout comme en C, un programme Go doit contenir une fonction <code>main</code> qui joue le rôle de point d&rsquo;entrée.</p>
 
+<p>Le package <code>fmt</code>, importé en troisième ligne, met à disposition plusieurs fonctions. La fonctions <code>Println</code> permet ici d&rsquo;afficher le texte qu&rsquo;elle prend en paramètre dans le terminal.</p>
+
+<p>Une fois le code prêt, deux choix sont possibles pour lancer le programme. Depuis un terminal, lancer l&rsquo;une des deux commandes suivantes :</p>
+
+<ul>
+<li><code>go run main.go</code>: compile le programme à la volée et l&rsquo;exécute directement, parfait pour une exécution rapide</li>
+<li><code>go build main.go</code> puis <code>./main</code>: compile le programme dans le repertoire local, puis l&rsquo;exécute</li>
+</ul>
+
+
+			
 			<div class="card" style="margin:35px 0">
 				<h3 class="card-title">Guide</h3>
 
 				<ul>
-<li>Do it</li>
-<li><em>Don&rsquo;t</em></li>
+<li>Crée un répertoire de travail</li>
+<li>Ajoute un fichier <code>main.go</code></li>
+<li>Tape le code permettant d&rsquo;afficher &ldquo;Hello, World!&rdquo;</li>
+<li>Lance la commande <code>go run main.go</code></li>
 </ul>
 
 
 			</div>
+			
+			
+			<h3>Variables &amp; Types</h3>
+
+<h4>Types basiques</h4>
+
+<p>Go est un langage typé, dont les types se rapprochent du C++ (<code>string</code>, <code>int</code>, <code>int64</code>, <code>float32</code>, <code>float64</code>, <code>bool</code>, &hellip;). Contrairement à tous les autres langages, en Go, le type des variables et paramètres est donné <em>à droite</em> de ces derniers (ex: <code>func f(x int)</code>).
+Supposons que tu souhaites crée une variable <code>x</code> de type <code>float32</code>. Tu peux le faire de différentes manières :</p>
+
+<ul>
+<li><code>var x float32</code>: déclare seulement la variable (la met à 0)</li>
+<li><code>var x float32 = 10.0</code>: donne la valeur 10.0 à la nouvelle variable <code>x</code></li>
+<li><code>x := 10.0</code>: infère le type de <code>x</code> à partir de la valeur qui lui est assignée.</li>
+</ul>
+
+<h4>Pointeurs</h4>
+
+<p>Toutes les variables et objets sont passés en copie entre les fonctions. Cependant, tout comme le C, le Go possède un système de pointeurs, ce qui rend possible la modification de la valeur à laquelle le pointeur réfère.</p>
+
+<pre><code class="language-go">x := 4
+y := x
+fmt.Println(x, y) // 4 4
+
+ptr := &amp;x
+*ptr = 10
+fmt.Println(ptr, x, y) // 0x416020 10 4
+</code></pre>
+
+<p>Si <code>ptr</code> est un objet possédant un attribut <code>attr</code>, alors, pour accéder à la valeur de cet attribut, pas besoin de la notation <code>-&gt;</code> du C++, un point suffit !</p>
+
+<pre><code class="language-go">x := ptr.attr
+</code></pre>
+
+<h4>Types avancés</h4>
+
+<p>Il est possible de définir des <em>arrays</em> (appelées <em>slices</em>) et des <em>maps</em> en Go. Ces types utilisent une quantité de mémoire variable, et doivent ainsi être construits explicitement, contrairement aux types de base.</p>
+
+<h5>Arrays</h5>
+
+<p>Un <em>array</em> se note <code>[]</code>, ainsi un <em>array</em> d&rsquo;entier est de type <code>[]int</code>.
+Pour construire un <em>array</em> d&rsquo;entier <code>arr</code> de 40 éléments, il te suffit d&rsquo;écrire :</p>
+
+<pre><code class="language-go">arr := make([]int, 40)
+</code></pre>
+
+<p>Si la taille est fixe et connue à la compilation, tu peux simplement utiliser cette syntaxe :</p>
+
+<pre><code class="language-go">var arr [40]int
+</code></pre>
+
+<p>Tu peux accéder au 10ème élément de cet <em>array</em> comme ceci:</p>
+
+<pre><code class="language-go">x := arr[10]
+</code></pre>
+
+<h5>Maps</h5>
+
+<p>Une <em>map</em> permet d&rsquo;organiser des données sous la forme de couples clé-valeur.
+Pour construire une <em>map</em> dont les clés sont des <code>string</code> et les valeurs sont des booléens, il suffit d&rsquo;écrire :</p>
+
+<pre><code class="language-go">m := make(map[string]bool)
+</code></pre>
+
+<p>Tu peux insérer une valeur avec sa clé de la manière suivante :</p>
+
+<pre><code class="language-go">m[&quot;key&quot;] = true
+</code></pre>
+
+<p>Tu peux accéder à la valeur correspondant à la clé <code>&quot;key&quot;</code> de cette <em>map</em> comme ceci:</p>
+
+<pre><code class="language-go">b := m[&quot;key&quot;]
+</code></pre>
+
+
+			
+			<div class="card" style="margin:35px 0">
+				<h3 class="card-title">Guide</h3>
+
+				<ul>
+<li>Crée plusieurs variables de types différents</li>
+<li>Affiche ces variables grâce au package fmt</li>
+<li>Crée un tableau de nombres flottants sur 64 bits de taille 40</li>
+<li>Crée une map de clés entières à valeurs booléennes</li>
+<li>Crée un tableau d&rsquo;entier de taille N, avec N un entier défini auparavant</li>
+</ul>
+
+
+			</div>
+			
+			
+			<h3>Conditions, Boucles et Fonctions</h3>
+
+<h4>Conditions</h4>
+
+<p>La syntaxe de la condition est très classique. Elle est tout à fait analogue à celle du C ou du Javascript, mais sans les parenthèses :</p>
+
+<pre><code class="language-go">if x == 10 {
+	...
+} else {
+	...
+}
+</code></pre>
+
+<h4>Boucles</h4>
+
+<p>Go supporte plusieurs méthodes d&rsquo;itérations dans les boucles <code>for</code> :</p>
+
+<h5>Classique</h5>
+
+<pre><code class="language-go">for i := 0; i &lt; 10; i++ {
+	...
+}
+</code></pre>
+
+<h5>Range</h5>
+
+<p>Le mot-clé <code>range</code> permet d&rsquo;itérer sur un tableau ou sur une <em>map</em>.</p>
+
+<pre><code class="language-go">arr := make([]int, 10)
+for key, value := range arr {
+	...
+}
+</code></pre>
+
+<p>Les boucles <code>while</code> n&rsquo;existent pas en Go. Il suffit seulement d&rsquo;utiliser un <code>for</code> :</p>
+
+<pre><code class="language-go">i := 0
+for i &lt; 10 {
+	i++
+}
+</code></pre>
+
+<h4>Fonctions</h4>
+
+<p>Une fonction se définit grâce au mot-clé <code>func</code> en précisant son nom, suivi de ses paramètres entre parenthèses, puis de son ou ses types de retours :</p>
+
+<pre><code class="language-go">func f(x int) int {
+	...
+	return x
+}
+
+func g(x, y int) (int, float32) {
+	...
+	return x+y, float32(x)+10
+}
+
+func h(x int) {
+	...
+	return 1####0
+}
+</code></pre>
+
+
+			
+			<div class="card" style="margin:35px 0">
+				<h3 class="card-title">Guide</h3>
+
+				<ul>
+<li>Utilise les différents types de boucles sur des exemples basiques
+Définis des fonctions simples à plusieurs paramètres et valeurs de retour</li>
+</ul>
+
+
+			</div>
+			
+			
+			<h3>Structures</h3>
+
+<p>Go n&rsquo;est pas, à strictement parler, un langage orienté objet (pas de classes ou d&rsquo;héritage par exemple), mais propose un ensemble de concepts qui donnent au langage une saine et élégante apparence orienté objet.</p>
+
+<p>Sont donnés ci-dessous quelques éléments pour manipuler des &ldquo;objets&rdquo; en Go, à savoir des <code>structs</code> et leurs méthodes associées.</p>
+
+<h4>Les structures</h4>
+
+<p>Les structures en Go sont tout à fait semblables à leur cousine en C :</p>
+
+<pre><code class="language-go">type Person struct {
+	Name string
+	Age int
+}
+</code></pre>
+
+<p>Les attributs de <code>structs</code> commençant par une majuscule sont <em>exportés</em>, c&rsquo;est à dire qu&rsquo;ils sont publiquement accessible depuis une base de code différente qui importerai le package dans lequel la <code>struct</code> est défini. Les attributs commençant par une minuscule sont eux invisibles.
+Tu peux tout de même accéder à tous les attributs, exportés ou pas, depuis le code situé dans le même répertoire.</p>
+
+<h4>Les méthodes</h4>
+
+<p>Contrairement aux classes en C++, la structure ne contient que l&rsquo;état de l&rsquo;objet, mais pas de méthodes s&rsquo;y appliquant.
+Ces méthodes sont définies en dehors du corps de la <code>struct</code>, à l&rsquo;aide d&rsquo;une parenthèse précisant le type auquel la méthode s&rsquo;applique et son alias dans le corps de la fonction (l&rsquo;équivalent du <code>self</code> en Python) :</p>
+
+<pre><code class="language-go">func (p *Person) getName() string {
+	return p.Name
+}
+
+func (p *Person) happyBirthday() {
+	p.Age++
+}
+</code></pre>
+
+<p>Depuis le reste du programme, il est alors possible d&rsquo;utiliser ces méthodes :</p>
+
+<pre><code class="language-go">p := Person{Name: &quot;John&quot;, Age: 10}
+fmt.Println(p.getName())
+p.happyBirthday()
+</code></pre>
+
+
+			
+			<div class="card" style="margin:35px 0">
+				<h3 class="card-title">Guide</h3>
+
+				<ul>
+<li>Crée une structure simple, possédant des attributs de plusieurs types</li>
+<li>Construis quelques méthodes (getters, setters, autres) qui complètent la structure</li>
+<li>Instancier la structure et faire usage des différentes méthodes codées précédement</li>
+</ul>
+
+
+			</div>
+			
+			
+			<h2>2 - La Grille</h2>
+
+<h3>Mise en place</h3>
+
+<p>La grille du jeu de la vie est une matrice de cellules de taille <em>NxM</em>.
+Tu peux stocker cette grille dans une structure <code>board</code> contenant la matrice et ses dimensions. Un tel object te permettra d&rsquo;accéder facilement à la matrice par la suite, et d&rsquo;en connaitre ses dimensions.</p>
+
+<p>En Go, tu peux découper ton code en plusieurs fichiers. Dès lors que ces fichiers se situent <em>dans le même répertoire</em> et qu&rsquo;ils arborent la meme ligne <code>package &lt;mon-package&gt;</code> en tête du fichier, ces fichiers partagent les mêmes définitions (comme si tu avais tout codé dans le même fichier). Pas besoin de <code>.h</code> !</p>
+
+
+			
+			<div class="card" style="margin:35px 0">
+				<h3 class="card-title">Guide</h3>
+
+				<ul>
+<li>Crée un fichier <code>board.go</code> dans le même répertoire</li>
+<li>Crée une structure <code>type board struct {}</code></li>
+<li>Ajoute les attributs de largeur <code>width</code> et de hauteur <code>height</code> de la matrice, de type <code>int</code></li>
+<li>Ajoute la matrice de booléen <code>grid</code> (<code>[][]bool</code>) en attribut</li>
+</ul>
+
+
+			</div>
+			
+			
+			<h3>Création</h3>
+
+<h4>Fonction de création de la grille de jeu</h4>
+
+<p>Pour faciliter l&rsquo;instanciation de la <code>board</code>, tu peux encapsuler ce processus dans une fonction, que l&rsquo;on appellera par exemple <code>newBoard</code>. Cette fonction se contentera des dimensions de la matrice en paramètre, et retournera un pointeur vers la <code>board</code> nouvellement créée.</p>
+
+<pre><code class="language-go">func newBoard(N, M int) *board {
+	...
+}
+</code></pre>
+
+<h4>Instanciation de la grille</h4>
+
+<p>Un pointeur vers une <code>board</code> peut être créé comme suit :</p>
+
+<pre><code class="language-go">b := &amp;board{}
+</code></pre>
+
+<h4>Construction de la matrice de booléens</h4>
+
+<p>Pour construire une matrice de taille <em>NxM</em>, il te faut construire le tableau de tableau d&rsquo;abord de taille <em>N</em>, puis construire chacun des <em>N</em> tableaux de taille <em>M</em>.</p>
+
+
+			
+			<div class="card" style="margin:35px 0">
+				<h3 class="card-title">Guide</h3>
+
+				<ul>
+<li>Crée la fonction <code>newBoard</code></li>
+<li>Instancie la variable contenant la grille</li>
+<li>Construis la matrice de cellules</li>
+<li>Retourne le pointeur vers la grille</li>
+</ul>
+
+
+			</div>
+			
+			
+			<h3>Méthodes</h3>
+
+<p>Pour interagir avec la <code>board</code>, il faudra mettre en place plusieurs méthodes rattachées à la <code>board</code> :</p>
+
+<ul>
+<li>Une méthode de mise à jour de la grille de jeu</li>
+<li>Une méthode d&rsquo;accès à une cellule de la grille, selon ses coordonnées <em>i, j</em></li>
+<li>Une méthode qui permette de modifier une cellule de la grille, selon ses coordonnées <em>i, j</em>, en lui assignant un certain booléen</li>
+</ul>
+
+<pre><code class="language-go">func (b *board) update()
+func (b *board) at(i, j int) bool
+func (b *board) set(i, j int, v bool)
+</code></pre>
+
+
+			
+			<div class="card" style="margin:35px 0">
+				<h3 class="card-title">Guide</h3>
+
+				<ul>
+<li>Définis les méthodes (en laissant leur contenu vide)</li>
+<li>Complète le contenu de la méthode <code>at</code></li>
+<li>Complète le contenu de la méthode <code>set</code></li>
+</ul>
+
+
+			</div>
+			
+			
+			<h3>Instanciation</h3>
+
+<p>Il est temps d&rsquo;utiliser la Grille !</p>
+
+<p>L&rsquo;objet <code>board</code> peut être instancié dans la fonction <code>main</code> de manière simple grâce à la fonction <code>newBoard</code> codée précédemment.</p>
+
+
+			
+			<div class="card" style="margin:35px 0">
+				<h3 class="card-title">Guide</h3>
+
+				<ul>
+<li>Définis deux variables entières <code>width</code> et <code>height</code> au début de la fonction main en leur donnant une valeur</li>
+<li>Crée un objet board à partir des dimensions de la grille de jeu</li>
+<li>Utilise une combinaison de <code>board.at(i, j)</code> et <code>board.set(i, j, v)</code> pour tester ton implémentation</li>
+<li>Utilise la commande <code>go run *.go</code> pour lancer tous les fichiers sources du répertoire</li>
+</ul>
+
+
+			</div>
+			
+			
+			<h3>Effets de bord</h3>
+
+<p>Le jeu de la vie se déroule étape par étape, en simulant à chaque itération le nouvel état de la grille à partir du précédent. Une première observations peut être faite :</p>
+
+<ul>
+<li>Le calcul du nouvel état d&rsquo;une cellule se base uniquement sur les voisins directs de cette dernière.</li>
+</ul>
+
+<p>Afin de simplifier le parcours de la grille et de la recherche des voisins, sans avoir à tester pour les conditions au bord, il est malin de construire une grille en laissant une bordure vide d&rsquo;une cellule de large que l&rsquo;on ne touche pas.</p>
+
+<p>Si la grille visible est de taille <em>NxM</em>, la grille en mémoire fait <em>(N+2)x(M+2)</em>.</p>
+
+
+			
+			<div class="card" style="margin:35px 0">
+				<h3 class="card-title">Guide</h3>
+
+				<ul>
+<li>Changer les dimensions de la grille créée pour prendre en compte le bord dans <code>newBoard</code></li>
+<li>Changer les fonctions <code>board.set</code> et <code>board.at</code> en conséquences</li>
+</ul>
+
+
+			</div>
+			
+			
+			<h3>Swap de la Grille</h3>
+
+<p>Une seconde observation est la suivante :</p>
+
+<ul>
+<li>L&rsquo;état des cellules à une itération donnée ne dépend que de l&rsquo;état de l&rsquo;itération immédiatement précédente.</li>
+</ul>
+
+<p>Afin d&rsquo;optimiser l&rsquo;espace mémoire du programme et réduire le nombre de créations et destructions de grilles inutile, on peut initier deux grilles dès le départ. On affiche l&rsquo;état du jeu en se basant sur la première grille, puis on met à jour la deuxième grille en se basant sur la première. A l&rsquo;itération suivante, on affiche la seconde grille, et on met à jour la première grille à partir de la deuxième.
+Ce système de va-et-vient est plus optimal.</p>
+
+
+			
+			<div class="card" style="margin:35px 0">
+				<h3 class="card-title">Guide</h3>
+
+				<ul>
+<li>Ajoute un attribut <code>swap</code> à la structure <code>board</code> qui désigne l&rsquo;indice (0 ou 1) de la grille couramment dessinée</li>
+<li>Change le type de la grille pour <code>[2][][]bool</code> (<code>grid</code> est un tableau de deux matrices)</li>
+<li>Corrige la fonction <code>newBoard</code> pour prendre en compte l&rsquo;ajout d&rsquo;une dimension à la grille</li>
+<li>Change les méthodes de la <code>board</code> en conséquence</li>
+</ul>
+
+
+			</div>
+			
+			
+			<h2>3 - La Logique</h2>
+
+<h3>Comptage des voisins</h3>
+
+<p>Le jeu de la vie est un automate cellulaire dont la fonction de changement d&rsquo;état dépend de l&rsquo;entourage immédiat des cellules de la Grille.</p>
+
+<p>Afin de connaitre le nouvel état de chaque cellule, il est nécessaire d&rsquo;implémenter une fonction permettant de compter le nombre de voisins d&rsquo;une cellule <em>(i, j)</em> donnée.</p>
+
+<p>Cette fonction doit accéder à l&rsquo;état de la grille, et pourra donc être ajoutée comme méthode de l&rsquo;objet <code>board</code>.</p>
+
+<p>De part la prise en compte des effets de bords auparavant, il n&rsquo;est pas utile de tester ces conditions dans la fonction de comptage, tu peux supposer que les cases mémoire auxquelles tu accèdes sont valides !</p>
+
+
+			
+			<div class="card" style="margin:35px 0">
+				<h3 class="card-title">Guide</h3>
+
+				<ul>
+<li>Crée une fonction <code>(b *board) countNeighbors(i, j int) int</code> qui compte les voisins autour d&rsquo;une cellule <em>(i, j)</em></li>
+<li>Implémente la logique de cette fonction</li>
+</ul>
+
+
+			</div>
+			
+			
+			<h3>État des cellules</h3>
+
+<p>Consulte les <a href="https://fr.wikipedia.org/wiki/Jeu_de_la_vie">règles du jeu</a> qui s&rsquo;appliquent à chacune des cellules de la Grille.</p>
+
+<p>Il est désormais temps d&rsquo;implémenter ces règles, sachant la valeur d&rsquo;une case et le nombre de ces voisins.</p>
+
+
+			
+			<div class="card" style="margin:35px 0">
+				<h3 class="card-title">Guide</h3>
+
+				<ul>
+<li>Crée une fonction <code>rule(n int, v bool) bool</code> qui, sachant le nombre de voisins <em>n</em> et l&rsquo;état d&rsquo;une cellule <em>v</em>, retourne le nouvel état de cette cellule</li>
+<li>Implémente les règles du jeu de manière succinte</li>
+</ul>
+
+
+			</div>
+			
+			
+			<h3>Mise à jour de la Grille</h3>
+
+<p>Cette étape consiste à compléter la méthode <code>update</code> de la <code>board</code>.
+Cette méthode est appelée à chaque itération du jeu de la vie.</p>
+
+<p>Tu feras appel aux fonctions de décompte des voisins et des règles du jeu.</p>
+
+<p>Par la suite, on supposera que la grille d&rsquo;indice <code>b.swap</code>est la grille actuellement affichée, et que la grille d&rsquo;indice <code>1-b.swap</code> est la grille qui doit être calculée pour la prochaine itération.</p>
+
+
+			
+			<div class="card" style="margin:35px 0">
+				<h3 class="card-title">Guide</h3>
+
+				<ul>
+<li>Réinitialise à <code>false</code> l&rsquo;état de la nouvelle grille</li>
+<li>Parcours les cellules pertinentes de la grille actuelle, compte le nombre de voisin de chacune d&rsquo;entre elle et mets le résultat de la fonction <code>rule</code> dans la nouvelle grille</li>
+<li>Echange les grilles (attribut <code>b.swap</code>)</li>
+</ul>
+
+
+			</div>
+			
+			
+			<h3>Configuration de la grille initiale</h3>
+
+<p>La grille de jeu est pour le moment vide. Le Jeu de la Vie prend tout son intérêt lorsqu&rsquo;on initialise l&rsquo;état du jeu avec certaines structures particulières (un <a href="https://fr.wikipedia.org/wiki/Planeur_(jeu_de_la_vie">planeur</a>) par exemple).</p>
+
+<p>Décris une configuration initiale de la grille avec les motifs de ton choix.</p>
+
+
+			
+			<div class="card" style="margin:35px 0">
+				<h3 class="card-title">Guide</h3>
+
+				<ul>
+<li>Renseigne toi sur les motifs intéressants du jeu de la vie</li>
+<li>Utilise la méthode <code>board.set</code> pour les implémenter depuis la fonction <code>main</code></li>
+</ul>
+
+
+			</div>
+			
+			
+			<h2>4 - L&rsquo;affichage graphique</h2>
+
+<h3>Installation des dépendances graphiques</h3>
+
+<p>Le Jeu de la Vie sera affiché dans une fenêtre graphique avec un contexte GLFW</p>
+
+<p>L&rsquo;affichage graphique sera réalisé grâce au package Go <code>github.com/faiface/pixel</code>.</p>
+
+<p>Pour installer cette librairie et la rendre importable dans le programme, tout en n&rsquo;étant pas forcé de placer le répertoire de travail dans le GOPATH, on utilisera une fonctionnalité récente de Go v1.11 : les modules.</p>
+
+<p>Lance la commande suivante à la racine de ton répertoire de travail :</p>
+
+<pre><code>go mod init go-game-of-life
+</code></pre>
+
+<p>Installe ensuite le package graphique :</p>
+
+<pre><code>go get github.com/faiface/pixel/...
+</code></pre>
+
+<p>Tu pourras désormais importer le package en toute sérénité (les imports sont automatiques si tu as bien mis en place ton environnement de développement Go) :</p>
+
+<pre><code class="language-go">import &quot;github.com/faiface/pixel&quot;
+...
+</code></pre>
+
+
+			
+			
+			<h3>Ouvrir une fenêtre</h3>
+
+<p>L&rsquo;ouverture d&rsquo;une fenêtre graphique demande toujours un certain nombre de lignes de code.</p>
+
+<p>Le code ci-dessous crée une fenêtre de taille <em>WxH</em>, vérifie qu&rsquo;il n&rsquo;y ait pas d&rsquo;erreurs, puis boucle à l&rsquo;infini tant que la fenêtre n&rsquo;est pas fermée par l&rsquo;utilisateur. Dans cette boucle infinie, la fenêtre est remplie de blanc puis le programme attend 50 ms avant de reboucler.</p>
+
+<pre><code class="language-go">var win *pixelgl.Window
+
+pixelgl.Run(func() {
+	win, err := pixelgl.NewWindow(pixelgl.WindowConfig{
+		Title:  &quot;Go - Game Of Life&quot;,
+		Bounds: pixel.R(0, 0, W, H),
+		VSync:  true,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	for !win.Closed() {
+		win.Clear(colornames.White)
+
+		// TODO: Update grid state
+		// TODO: Display grid
+
+		win.Update()
+		time.Sleep(50 * time.Millisecond)
+	}
+})
+</code></pre>
+
+
+			
+			<div class="card" style="margin:35px 0">
+				<h3 class="card-title">Guide</h3>
+
+				<ul>
+<li>Crée un fichier <code>window.go</code> dans lequel les fonctions graphiques seront codées</li>
+<li>Entoure la fonction <code>pixelgl.Run</code> de ta propre fonction <code>run</code> qui prenne en paramètre <code>b</code> un pointeur vers la <code>board</code>, et <code>blockSize</code> la taille en pixel d&rsquo;une cellule affichée à l&rsquo;écran</li>
+<li>Appelle ta fonction <code>run</code> depuis <code>main.go</code></li>
+<li>Teste le programme (<code>go run *.go</code>) et vérifie qu&rsquo;une fenêtre blanche apparaît à l&rsquo;écran</li>
+</ul>
+
+
+			</div>
+			
+			
+			<h3>Afficher la Grille</h3>
+
+<p>La grille est accessible à l&rsquo;intérieur de la fonction <code>run</code> car elle y a été passée en paramètre.
+Il est donc possible depuis l&rsquo;intérieur de la boucle infinie de mettre à jour la <code>board</code>, puis d&rsquo;afficher la grille actuelle cellule par cellule.</p>
+
+<p>Pour afficher les cellules, il te faudra le package <em>imdraw</em>, qui s&rsquo;utilise comme suit :</p>
+
+<pre><code class="language-go">\\ Initialization
+imd := imdraw.New(nil)
+imd.Clear()
+
+\\ Set drawing color
+imd.Color = colornames.Black
+
+\\ Add a rectangle between the points (10, 10) and (20, 20)
+imd.Push(pixel.V(10.0, 10.0))
+imd.Push(pixel.V(20.0, 20.0))
+imd.Rectangle(0)
+
+// Draw all geometry
+imd.Draw(win)
+</code></pre>
+
+
+			
+			<div class="card" style="margin:35px 0">
+				<h3 class="card-title">Guide</h3>
+
+				<ul>
+<li>Crée l&rsquo;objet <code>imd</code> avant l&rsquo;entrée dans la boucle infinie</li>
+<li>Appelle la méthode <code>update</code> de la <code>board</code> avant d&rsquo;afficher les cellules</li>
+<li><code>Clear</code> l&rsquo;afficheur avant de dessiner les cellules</li>
+<li>Itère sur les cellules de la grille et affiche un rectangle bien placé de la couleur qu&rsquo;il faut (blanc = cellule morte, noir = cellule vivante)</li>
+<li>Appelle la méthode <code>imd.Draw</code> une fois que toutes les cellules ont été ajoutée à l&rsquo;afficheur</li>
+</ul>
+
+
+			</div>
+			
+			
+			<h2>5 - Aller plus loin</h2>
+
+<h3>Remplissage aléatoire</h3>
+
+<p>De manière facultative, tu peux remplir la grille de manière aléatoire.</p>
+
+<p>Le package <code>math/rand</code> met à disposition plusieurs fonctions de génération de nombre aléatoire.</p>
+
+<p>Il est nécessaire de commencer par initialiser le générateur :</p>
+
+<pre><code class="language-go">rand.Seed(time.Now().UnixNano())
+</code></pre>
+
+<p>On pourra ensuite utiliser la fonction <code>rand.Float32()</code> dans l&rsquo;optique de générer des booléens aléatoires.</p>
+
+
+			
+			<div class="card" style="margin:35px 0">
+				<h3 class="card-title">Guide</h3>
+
+				<ul>
+<li>Crée une méthode <code>func (b *board) randomInit()</code> dans <code>board.go</code></li>
+<li>Initialise le générateur aléatoire</li>
+<li>Parcours les <em>NxM</em> cellules de la grille et attribue leur un booléen aléatoire</li>
+<li>Appelle la fonction <code>randomInit()</code> depuis <code>main</code></li>
+</ul>
+
+
+			</div>
+			
+			
+			<h3>Multithreading</h3>
+
+<p>Go est aussi connu pour sa gestion simple et puissante de la concurrence. Il est en effet très simple d&rsquo;exécuter plusieurs parties de son code en parallèle, à l&rsquo;aide des <a href="https://gobyexample.com/goroutines">goroutines</a>, qui sont une alternative très légères aux <em>threads</em>.</p>
+
+<h4>Les goroutines</h4>
+
+<p>Si <code>f</code> est une fonction définie dans le programme que l&rsquo;on souhaite lancer en parallèle de l&rsquo;exécution du programme, il suffit d&rsquo;utiliser la commande <code>go</code> :</p>
+
+<pre><code class="language-go">go f()
+</code></pre>
+
+<p>C&rsquo;est tout.</p>
+
+<p>Le programme continuera son exécution, alors que le contenu de <code>f</code> sera exécuté en parallèle. Par défaut, en cas de besoin, Go peut étaler ses calculs sur tous les cœurs du PC.</p>
+
+<h4>Les <em>channels</em></h4>
+
+<p>Comment discuter entre les différents codes exécutés en parallèles ? La solution proposée par le langage Go, très élégante, est l&rsquo;usage de <a href="https://gobyexample.com/channels"><em>channels</em></a>. Ces channels sont des tuyaux de communication inter goroutine.</p>
+
+<p>Supposons que tu souhaites lancer un calcul dans une fonction <code>f</code>, et rapatrier le résultat du calcul dans le fil d&rsquo;exécution du programme principal.</p>
+
+<p>Tu peux envoyer le résultat du calcul dans un channel (bloquant), et récupérer ce résultat à l&rsquo;autre extrémité du <em>channel</em> (bloquant) à l&rsquo;aide de la notation <code>&lt;-</code> :</p>
+
+<pre><code class="language-go">func f(ch chan int, x int) {
+	ch &lt;- x * x // Envoi du résultat dans le channel
+}
+
+func main() {
+	ch := make(chan int) // Création du channel
+	go f(ch, 10) // Lancement de f en parallèle
+
+	result := &lt;- ch // Récupération du résultat
+
+	fmt.Println(&quot;Result :&quot;, result)
+}
+</code></pre>
+
+<h4>Application au Jeu de la Vie</h4>
+
+<p>Afin d&rsquo;accélérer le calcul du nouvel état de la grille, il est intéressant de mettre à jour les lignes de la grille en parallèle en lançant <em>N</em> goroutines, puis d&rsquo;attendre la fin de tous les calculs avant de passer à la suite.</p>
+
+
+			
+			<div class="card" style="margin:35px 0">
+				<h3 class="card-title">Guide</h3>
+
+				<ul>
+<li>Crée une méthode <code>func (b *board) updateRow(ch chan int, i int)</code> qui prend en paramètre un channel entier, et le numéro de la ligne à mettre à jour</li>
+<li>Déplace le code de mise à jour de la ligne de la méthode <code>update</code> dans cette nouvelle méthode</li>
+<li>Signalise la fin du calcul de la ligne en envoyant un entier quelconque dans le channel (<code>ch &lt;- 0</code>)</li>
+<li>Crée un channel entier dans la méthode <code>update</code></li>
+<li>Lance une goroutine pour <code>updateRow</code> par ligne de la grille</li>
+<li>Attends ensuite <em>N</em> signaux de fin de calcul ( <code>&lt;-ch</code>) avant de continuer l&rsquo;exécution normale du programme</li>
+</ul>
+
+
+			</div>
+			
+			
+			<h3>Tests</h3>
+
+<p>L&rsquo;un des avantages du langage Go est qu&rsquo;il n&rsquo;est pas qu&rsquo;un simple langage avec son compilateur. Go est fourni avec de nombreux outils (la commande <code>go</code> les liste). Un de ces outils est un pipeline de tests automatiques.</p>
+
+<h4>Ecrire un test</h4>
+
+<p>Les tests du fichier <code>foo.go</code> sont écrit dans un fichier nommé <code>foo_test.go</code>. Si la fonction à tester est <code>func Foo()</code>, sa fonction de test devra se être <code>func TestFoo(t *testing.T)</code>. Ces conventions permettent de s&rsquo;y retrouver, tout simplement.</p>
+
+<p>Imaginons que l&rsquo;on souhaite tester la fonction <code>Square(x int) int</code> qui retourne, ou du moins est censé retourner, le carré de <em>x</em>.
+Une fonction de test possible est la suivante :</p>
+
+<pre><code class="language-go">func TestSquare(t *testing.T) {
+	var res int
+	res = Square(10)
+	if res != 100 {
+		t.Error(&quot;Expected 100, got &quot;, res)
+	}
+	res = Square(-5)
+	if res != 25 {
+		t.Error(&quot;Expected 25, got &quot;, res)
+	}
+}
+</code></pre>
+
+<p>Certains packages tels que <code>github.com/stretchr/testify/assert</code> permettent de quelque peu condenser les tests :</p>
+
+<pre><code class="language-go">func TestSquare(t *testing.T) {
+	assert.Equal(t, 100, Square(10), &quot;Must be equal&quot;)
+	assert.Equal(t, 25, Square(-5), &quot;Must be equal&quot;)
+}
+</code></pre>
+
+<h4>Lancer les test</h4>
+
+<p>Il suffit de lancer la commande suivante :</p>
+
+<pre><code>go test
+</code></pre>
+
+<p>L&rsquo;outil de test détecte les fichiers de tests, et lance les tests qui s&rsquo;y trouvent.</p>
+
+<p>Depuis Visual Studio Code, l&rsquo;intégration avancée du langage Go permet également de lancer un test en particulier en cliquant sur le lien <code>run test</code> qui apparaît en haut de chaque fonction de test.</p>
+
+
+			
+			<div class="card" style="margin:35px 0">
+				<h3 class="card-title">Guide</h3>
+
+				<ul>
+<li>Teste les fonctions de ton choix</li>
+</ul>
+
+
+			</div>
+			
 			
 		</div>
 	</section>
