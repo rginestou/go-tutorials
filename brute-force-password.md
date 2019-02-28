@@ -26,7 +26,7 @@ Sous Ubuntu, pour installer la dernière version de Go, tu peux utiliser un _ppa
 
 Ajoute ensuite la ligne suivante à ton .bashrc (ou ton .zshrc si tu utilises zsh) :
 
-`export PATH=$PATH:/usr/lib/go-1.11/bin:$HOME/go/bin`
+	export PATH=$PATH:/usr/lib/go-1.11/bin:$HOME/go/bin
 
 Si tu utilises un autre OS, tu peux toujours suivre les instructions d'installation sur le [site officiel](https://golang.org/doc/install).
 

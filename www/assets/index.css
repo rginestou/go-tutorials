@@ -1,10 +1,12 @@
 :not(pre)>code {
+    overflow-wrap: anywhere;
     background-color: #f5f6f7;
     border-radius: 3px;
     box-shadow: 0 0 0 1px rgba(9, 45, 66, .13);
     color: #eb5a46;
     padding: 1px 3px;
     margin: -1px 2px;
+    overflow-x: auto;
 }
 
 ul li ul li {
