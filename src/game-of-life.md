@@ -1,12 +1,12 @@
-=== IMAGE ===
+<!-- image -->
 
-https://pilsniak.com/wp-content/uploads/2017/04/golang.jpg
+assets/cover1.jpg
 
-=== TITLE ===
+<!-- title -->
 
 Game Of Life with Go
 
-=== CONTENT ===
+<!-- content -->
 
 ## Préparation
 
@@ -14,9 +14,11 @@ Game Of Life with Go
 
 Sous Ubuntu, pour installer la dernière version de Go, tu peux utiliser un _ppa_ :
 
-    sudo add-apt-repository ppa:gophers/archive
-    sudo apt update
-    sudo apt install golang-1.11
+```bash
+sudo add-apt-repository ppa:gophers/archive
+sudo apt update
+sudo apt install golang-1.11
+```
 
 Ajoute ensuite la ligne suivante à ton .bashrc (ou ton .zshrc si tu utilises zsh) :
 
@@ -24,11 +26,11 @@ Ajoute ensuite la ligne suivante à ton .bashrc (ou ton .zshrc si tu utilises zs
 
 Si tu utilises un autre OS, tu peux toujours suivre les instructions d'installation sur le [site officiel](https://golang.org/doc/install).
 
-=== GUIDE ===
+<!-- guide -->
 
 * Exécute la commande `go version` et vérifie le résultat (`go version go1.11.2 linux/amd64`)
 
-=== CONTENT ===
+<!-- content -->
 
 ### Environnement de développement
 
@@ -38,7 +40,7 @@ Il te faudra aussi installer l'extension [**Go**](https://marketplace.visualstud
 
 *ProTip* : Pour pouvoir rapidement tester des programmes simples en Go, tu peux visiter [The Go Playground](https://play.golang.org/) qui te permet de compiler du code en ligne.
 
-=== CONTENT ===
+<!-- content -->
 
 ## 1 - Les Fondations
 
@@ -65,14 +67,14 @@ Une fois le code prêt, deux choix sont possibles pour lancer le programme. Depu
 * `go run main.go`: compile le programme à la volée et l'exécute directement, parfait pour une exécution rapide
 * `go build main.go` puis `./main`: compile le programme dans le repertoire local, puis l'exécute
 
-=== GUIDE ===
+<!-- guide -->
 
 * Crée un répertoire de travail
 * Ajoute un fichier `main.go`
 * Tape le code permettant d'afficher "Hello, World!"
 * Lance la commande `go run main.go`
 
-=== CONTENT ===
+<!-- content -->
 
 ### Variables & Types
 
@@ -151,7 +153,7 @@ Tu peux accéder à la valeur correspondant à la clé `"key"` de cette _map_ co
 b := m["key"]
 ```
 
-=== GUIDE ===
+<!-- guide -->
 
 * Crée plusieurs variables de types différents
 * Affiche ces variables grâce au package fmt
@@ -159,7 +161,7 @@ b := m["key"]
 * Crée une map de clés entières à valeurs booléennes
 * Crée un tableau d'entier de taille N, avec N un entier défini auparavant
 
-=== CONTENT ===
+<!-- content -->
 
 ### Conditions, Boucles et Fonctions
 
@@ -228,13 +230,13 @@ func h(x int) {
 }
 ```
 
-=== GUIDE ===
+<!-- guide -->
 
 * Utilise les différents types de boucles sur des exemples basiques
 Définis des fonctions simples à plusieurs paramètres et valeurs de retour
 
 
-=== CONTENT ===
+<!-- content -->
 
 ### Structures
 
@@ -279,31 +281,31 @@ fmt.Println(p.getName())
 p.happyBirthday()
 ```
 
-=== GUIDE ===
+<!-- guide -->
 
 * Crée une structure simple, possédant des attributs de plusieurs types
 * Construis quelques méthodes (getters, setters, autres) qui complètent la structure
 * Instancier la structure et faire usage des différentes méthodes codées précédement
 
-=== CONTENT ===
+<!-- content -->
 
 ## 2 - La Grille
 
 ### Mise en place
 
-La grille du jeu de la vie est une matrice de cellules de taille _NxM_.
+La grille du jeu de la vie est une matrice de cellules de taille $N\times M$.
 Tu peux stocker cette grille dans une structure `board` contenant la matrice et ses dimensions. Un tel object te permettra d'accéder facilement à la matrice par la suite, et d'en connaitre ses dimensions.
 
 En Go, tu peux découper ton code en plusieurs fichiers. Dès lors que ces fichiers se situent *dans le même répertoire* et qu'ils arborent la meme ligne `package <mon-package>` en tête du fichier, ces fichiers partagent les mêmes définitions (comme si tu avais tout codé dans le même fichier). Pas besoin de `.h` !
 
-=== GUIDE ===
+<!-- guide -->
 
 * Crée un fichier `board.go` dans le même répertoire
 * Crée une structure `type board struct {}`
 * Ajoute les attributs de largeur `width` et de hauteur `height` de la matrice, de type `int`
 * Ajoute la matrice de booléen `grid` (`[][]bool`) en attribut
 
-=== CONTENT ===
+<!-- content -->
 
 ### Création
 
@@ -327,24 +329,24 @@ b := &board{}
 
 #### Construction de la matrice de booléens
 
-Pour construire une matrice de taille _NxM_, il te faut construire le tableau de tableau d'abord de taille _N_, puis construire chacun des _N_ tableaux de taille _M_.
+Pour construire une matrice de taille $N\times M$, il te faut construire le tableau de tableau d'abord de taille $N$, puis construire chacun des $N$ tableaux de taille $M$.
 
-=== GUIDE ===
+<!-- guide -->
 
 * Crée la fonction `newBoard`
 * Instancie la variable contenant la grille
 * Construis la matrice de cellules
 * Retourne le pointeur vers la grille
 
-=== CONTENT ===
+<!-- content -->
 
 ### Méthodes
 
 Pour interagir avec la `board`, il faudra mettre en place plusieurs méthodes rattachées à la `board` :
 
 * Une méthode de mise à jour de la grille de jeu
-* Une méthode d'accès à une cellule de la grille, selon ses coordonnées _i, j_
-* Une méthode qui permette de modifier une cellule de la grille, selon ses coordonnées _i, j_, en lui assignant un certain booléen
+* Une méthode d'accès à une cellule de la grille, selon ses coordonnées $i, j$
+* Une méthode qui permette de modifier une cellule de la grille, selon ses coordonnées $i, j$, en lui assignant un certain booléen
 
 ```go
 func (b *board) update()
@@ -352,13 +354,13 @@ func (b *board) at(i, j int) bool
 func (b *board) set(i, j int, v bool)
 ```
 
-=== GUIDE ===
+<!-- guide -->
 
 * Définis les méthodes (en laissant leur contenu vide)
 * Complète le contenu de la méthode `at`
 * Complète le contenu de la méthode `set`
 
-=== CONTENT ===
+<!-- content -->
 
 ### Instanciation
 
@@ -366,14 +368,14 @@ Il est temps d'utiliser la Grille !
 
 L'objet `board` peut être instancié dans la fonction `main` de manière simple grâce à la fonction `newBoard` codée précédemment.
 
-=== GUIDE ===
+<!-- guide -->
 
 * Définis deux variables entières `width` et `height` au début de la fonction main en leur donnant une valeur
 * Crée un objet board à partir des dimensions de la grille de jeu
 * Utilise une combinaison de `board.at(i, j)` et `board.set(i, j, v)` pour tester ton implémentation
 * Utilise la commande `go run *.go` pour lancer tous les fichiers sources du répertoire
 
-=== CONTENT ===
+<!-- content -->
 
 ### Effets de bord
 
@@ -383,14 +385,14 @@ Le jeu de la vie se déroule étape par étape, en simulant à chaque itération
 
 Afin de simplifier le parcours de la grille et de la recherche des voisins, sans avoir à tester pour les conditions au bord, il est malin de construire une grille en laissant une bordure vide d'une cellule de large que l'on ne touche pas.
 
-Si la grille visible est de taille _NxM_, la grille en mémoire fait _(N+2)x(M+2)_.
+Si la grille visible est de taille $N\times M$, la grille en mémoire fait $(N+2)\times (M+2)$.
 
-=== GUIDE ===
+<!-- guide -->
 
 * Changer les dimensions de la grille créée pour prendre en compte le bord dans `newBoard`
 * Changer les fonctions `board.set` et `board.at` en conséquences
 
-=== CONTENT ===
+<!-- content -->
 
 ### Swap de la Grille
 
@@ -401,14 +403,14 @@ Une seconde observation est la suivante :
 Afin d'optimiser l'espace mémoire du programme et réduire le nombre de créations et destructions de grilles inutile, on peut initier deux grilles dès le départ. On affiche l'état du jeu en se basant sur la première grille, puis on met à jour la deuxième grille en se basant sur la première. A l'itération suivante, on affiche la seconde grille, et on met à jour la première grille à partir de la deuxième.
 Ce système de va-et-vient est plus optimal.
 
-=== GUIDE ===
+<!-- guide -->
 
 * Ajoute un attribut `swap` à la structure `board` qui désigne l'indice (0 ou 1) de la grille couramment dessinée
 * Change le type de la grille pour `[2][][]bool` (`grid` est un tableau de deux matrices)
 * Corrige la fonction `newBoard` pour prendre en compte l'ajout d'une dimension à la grille
 * Change les méthodes de la `board` en conséquence
 
-=== CONTENT ===
+<!-- content -->
 
 ## 3 - La Logique
 
@@ -416,18 +418,18 @@ Ce système de va-et-vient est plus optimal.
 
 Le jeu de la vie est un automate cellulaire dont la fonction de changement d'état dépend de l'entourage immédiat des cellules de la Grille.
 
-Afin de connaitre le nouvel état de chaque cellule, il est nécessaire d'implémenter une fonction permettant de compter le nombre de voisins d'une cellule _(i, j)_ donnée.
+Afin de connaitre le nouvel état de chaque cellule, il est nécessaire d'implémenter une fonction permettant de compter le nombre de voisins d'une cellule $(i, j)$ donnée.
 
 Cette fonction doit accéder à l'état de la grille, et pourra donc être ajoutée comme méthode de l'objet `board`.
 
 De part la prise en compte des effets de bords auparavant, il n'est pas utile de tester ces conditions dans la fonction de comptage, tu peux supposer que les cases mémoire auxquelles tu accèdes sont valides !
 
-=== GUIDE ===
+<!-- guide -->
 
-* Crée une fonction `(b *board) countNeighbors(i, j int) int` qui compte les voisins autour d'une cellule _(i, j)_
+* Crée une fonction `(b *board) countNeighbors(i, j int) int` qui compte les voisins autour d'une cellule $(i, j)$
 * Implémente la logique de cette fonction
 
-=== CONTENT ===
+<!-- content -->
 
 ### État des cellules
 
@@ -435,12 +437,12 @@ Consulte les [règles du jeu](https://fr.wikipedia.org/wiki/Jeu_de_la_vie) qui s
 
 Il est désormais temps d'implémenter ces règles, sachant la valeur d'une case et le nombre de ces voisins.
 
-=== GUIDE ===
+<!-- guide -->
 
-* Crée une fonction `rule(n int, v bool) bool` qui, sachant le nombre de voisins _n_ et l'état d'une cellule _v_, retourne le nouvel état de cette cellule
+* Crée une fonction `rule(n int, v bool) bool` qui, sachant le nombre de voisins `n` et l'état d'une cellule `v`, retourne le nouvel état de cette cellule
 * Implémente les règles du jeu de manière succinte
 
-=== CONTENT ===
+<!-- content -->
 
 ### Mise à jour de la Grille
 
@@ -451,13 +453,13 @@ Tu feras appel aux fonctions de décompte des voisins et des règles du jeu.
 
 Par la suite, on supposera que la grille d'indice `b.swap`est la grille actuellement affichée, et que la grille d'indice `1-b.swap` est la grille qui doit être calculée pour la prochaine itération.
 
-=== GUIDE ===
+<!-- guide -->
 
 * Réinitialise à `false` l'état de la nouvelle grille
 * Parcours les cellules pertinentes de la grille actuelle, compte le nombre de voisin de chacune d'entre elle et mets le résultat de la fonction `rule` dans la nouvelle grille
 * Echange les grilles (attribut `b.swap`)
 
-=== CONTENT ===
+<!-- content -->
 
 ### Configuration de la grille initiale
 
@@ -465,12 +467,12 @@ La grille de jeu est pour le moment vide. Le Jeu de la Vie prend tout son intér
 
 Décris une configuration initiale de la grille avec les motifs de ton choix.
 
-=== GUIDE ===
+<!-- guide -->
 
 * Renseigne toi sur les motifs intéressants du jeu de la vie
 * Utilise la méthode `board.set` pour les implémenter depuis la fonction `main`
 
-=== CONTENT ===
+<!-- content -->
 
 ## 4 - L'affichage graphique
 
@@ -484,12 +486,15 @@ Pour installer cette librairie et la rendre importable dans le programme, tout e
 
 Lance la commande suivante à la racine de ton répertoire de travail :
 
-
-    go mod init go-game-of-life
+```bash
+go mod init go-game-of-life
+```
 
 Installe ensuite le package graphique :
 
-    go get github.com/faiface/pixel/...
+```bash
+go get github.com/faiface/pixel/...
+```
 
 Tu pourras désormais importer le package en toute sérénité (les imports sont automatiques si tu as bien mis en place ton environnement de développement Go) :
 
@@ -498,13 +503,13 @@ import "github.com/faiface/pixel"
 ...
 ```
 
-=== CONTENT ===
+<!-- content -->
 
 ### Ouvrir une fenêtre
 
 L'ouverture d'une fenêtre graphique demande toujours un certain nombre de lignes de code.
 
-Le code ci-dessous crée une fenêtre de taille _WxH_, vérifie qu'il n'y ait pas d'erreurs, puis boucle à l'infini tant que la fenêtre n'est pas fermée par l'utilisateur. Dans cette boucle infinie, la fenêtre est remplie de blanc puis le programme attend 50 ms avant de reboucler.
+Le code ci-dessous crée une fenêtre de taille $W\times H$, vérifie qu'il n'y ait pas d'erreurs, puis boucle à l'infini tant que la fenêtre n'est pas fermée par l'utilisateur. Dans cette boucle infinie, la fenêtre est remplie de blanc puis le programme attend 50 ms avant de reboucler.
 
 ```go
 var win *pixelgl.Window
@@ -531,21 +536,21 @@ pixelgl.Run(func() {
 })
 ```
 
-=== GUIDE ===
+<!-- guide -->
 
 * Crée un fichier `window.go` dans lequel les fonctions graphiques seront codées
 * Entoure la fonction `pixelgl.Run` de ta propre fonction `run` qui prenne en paramètre `b` un pointeur vers la `board`, et `blockSize` la taille en pixel d'une cellule affichée à l'écran
 * Appelle ta fonction `run` depuis `main.go`
 * Teste le programme (`go run *.go`) et vérifie qu'une fenêtre blanche apparaît à l'écran
 
-=== CONTENT ===
+<!-- content -->
 
 ### Afficher la Grille
 
 La grille est accessible à l'intérieur de la fonction `run` car elle y a été passée en paramètre.
 Il est donc possible depuis l'intérieur de la boucle infinie de mettre à jour la `board`, puis d'afficher la grille actuelle cellule par cellule.
 
-Pour afficher les cellules, il te faudra le package _imdraw_, qui s'utilise comme suit :
+Pour afficher les cellules, il te faudra le package `imdraw`, qui s'utilise comme suit :
 
 ```go
 // Initialization
@@ -564,7 +569,7 @@ imd.Rectangle(0)
 imd.Draw(win)
 ```
 
-=== GUIDE ===
+<!-- guide -->
 
 * Crée l'objet `imd` avant l'entrée dans la boucle infinie
 * Appelle la méthode `update` de la `board` avant d'afficher les cellules
@@ -572,7 +577,7 @@ imd.Draw(win)
 * Itère sur les cellules de la grille et affiche un rectangle bien placé de la couleur qu'il faut (blanc = cellule morte, noir = cellule vivante)
 * Appelle la méthode `imd.Draw` une fois que toutes les cellules ont été ajoutée à l'afficheur
 
-=== CONTENT ===
+<!-- content -->
 
 ## 5 - Aller plus loin
 
@@ -590,14 +595,14 @@ rand.Seed(time.Now().UnixNano())
 
 On pourra ensuite utiliser la fonction `rand.Float32()` dans l'optique de générer des booléens aléatoires.
 
-=== GUIDE ===
+<!-- guide -->
 
 * Crée une méthode `func (b *board) randomInit()` dans `board.go`
 * Initialise le générateur aléatoire
-* Parcours les _NxM_ cellules de la grille et attribue leur un booléen aléatoire
+* Parcours les $N\times M$ cellules de la grille et attribue leur un booléen aléatoire
 * Appelle la fonction `randomInit()` depuis `main`
 
-=== CONTENT ===
+<!-- content -->
 
 ### Multithreading
 
@@ -640,18 +645,18 @@ func main() {
 
 #### Application au Jeu de la Vie
 
-Afin d'accélérer le calcul du nouvel état de la grille, il est intéressant de mettre à jour les lignes de la grille en parallèle en lançant _N_ goroutines, puis d'attendre la fin de tous les calculs avant de passer à la suite.
+Afin d'accélérer le calcul du nouvel état de la grille, il est intéressant de mettre à jour les lignes de la grille en parallèle en lançant $N$ goroutines, puis d'attendre la fin de tous les calculs avant de passer à la suite.
 
-=== GUIDE ===
+<!-- guide -->
 
 * Crée une méthode `func (b *board) updateRow(ch chan int, i int)` qui prend en paramètre un channel entier, et le numéro de la ligne à mettre à jour
 * Déplace le code de mise à jour de la ligne de la méthode `update` dans cette nouvelle méthode
 * Signalise la fin du calcul de la ligne en envoyant un entier quelconque dans le channel (`ch <- 0`)
 * Crée un channel entier dans la méthode `update`
 * Lance une goroutine pour `updateRow` par ligne de la grille
-* Attends ensuite _N_ signaux de fin de calcul ( `<-ch`) avant de continuer l'exécution normale du programme
+* Attends ensuite $N$ signaux de fin de calcul ( `<-ch`) avant de continuer l'exécution normale du programme
 
-=== CONTENT ===
+<!-- content -->
 
 ### Tests
 
@@ -661,7 +666,7 @@ L'un des avantages du langage Go est qu'il n'est pas qu'un simple langage avec s
 
 Les tests du fichier `foo.go` sont écrit dans un fichier nommé `foo_test.go`. Si la fonction à tester est `func Foo()`, sa fonction de test devra se être `func TestFoo(t *testing.T)`. Ces conventions permettent de s'y retrouver, tout simplement.
 
-Imaginons que l'on souhaite tester la fonction `Square(x int) int` qui retourne, ou du moins est censé retourner, le carré de _x_.
+Imaginons que l'on souhaite tester la fonction `Square(x int) int` qui retourne, ou du moins est censé retourner, le carré de `x`.
 Une fonction de test possible est la suivante :
 
 ```go
@@ -691,12 +696,14 @@ func TestSquare(t *testing.T) {
 
 Il suffit de lancer la commande suivante :
 
-    go test
+```bash
+go test
+```
 
 L'outil de test détecte les fichiers de tests, et lance les tests qui s'y trouvent.
 
 Depuis Visual Studio Code, l'intégration avancée du langage Go permet également de lancer un test en particulier en cliquant sur le lien `run test` qui apparaît en haut de chaque fonction de test.
 
-=== GUIDE ===
+<!-- guide -->
 
 * Teste les fonctions de ton choix
