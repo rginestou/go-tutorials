@@ -285,7 +285,7 @@ p.happyBirthday()
 
 * Crée une structure simple, possédant des attributs de plusieurs types
 * Construis quelques méthodes (getters, setters, autres) qui complètent la structure
-* Instancier la structure et faire usage des différentes méthodes codées précédement
+* Instancier la structure et faire usage des différentes méthodes codées précédemment
 
 <!-- content -->
 
@@ -294,7 +294,7 @@ p.happyBirthday()
 ### Mise en place
 
 La grille du jeu de la vie est une matrice de cellules de taille $N\times M$.
-Tu peux stocker cette grille dans une structure `board` contenant la matrice et ses dimensions. Un tel object te permettra d'accéder facilement à la matrice par la suite, et d'en connaitre ses dimensions.
+Tu peux stocker cette grille dans une structure `board` contenant la matrice et ses dimensions. Un tel object te permettra d'accéder facilement à la matrice par la suite, et d'en connaître ses dimensions.
 
 En Go, tu peux découper ton code en plusieurs fichiers. Dès lors que ces fichiers se situent *dans le même répertoire* et qu'ils arborent la meme ligne `package <mon-package>` en tête du fichier, ces fichiers partagent les mêmes définitions (comme si tu avais tout codé dans le même fichier). Pas besoin de `.h` !
 
@@ -418,7 +418,7 @@ Ce système de va-et-vient est plus optimal.
 
 Le jeu de la vie est un automate cellulaire dont la fonction de changement d'état dépend de l'entourage immédiat des cellules de la Grille.
 
-Afin de connaitre le nouvel état de chaque cellule, il est nécessaire d'implémenter une fonction permettant de compter le nombre de voisins d'une cellule $(i, j)$ donnée.
+Afin de connaître le nouvel état de chaque cellule, il est nécessaire d'implémenter une fonction permettant de compter le nombre de voisins d'une cellule $(i, j)$ donnée.
 
 Cette fonction doit accéder à l'état de la grille, et pourra donc être ajoutée comme méthode de l'objet `board`.
 
@@ -440,7 +440,7 @@ Il est désormais temps d'implémenter ces règles, sachant la valeur d'une case
 <!-- guide -->
 
 * Crée une fonction `rule(n int, v bool) bool` qui, sachant le nombre de voisins `n` et l'état d'une cellule `v`, retourne le nouvel état de cette cellule
-* Implémente les règles du jeu de manière succinte
+* Implémente les règles du jeu de manière succincte
 
 <!-- content -->
 
@@ -457,7 +457,7 @@ Par la suite, on supposera que la grille d'indice `b.swap`est la grille actuelle
 
 * Réinitialise à `false` l'état de la nouvelle grille
 * Parcours les cellules pertinentes de la grille actuelle, compte le nombre de voisin de chacune d'entre elle et mets le résultat de la fonction `rule` dans la nouvelle grille
-* Echange les grilles (attribut `b.swap`)
+* Échange les grilles (attribut `b.swap`)
 
 <!-- content -->
 
@@ -662,7 +662,7 @@ Afin d'accélérer le calcul du nouvel état de la grille, il est intéressant d
 
 L'un des avantages du langage Go est qu'il n'est pas qu'un simple langage avec son compilateur. Go est fourni avec de nombreux outils (la commande `go` les liste). Un de ces outils est un pipeline de tests automatiques.
 
-#### Ecrire un test
+#### Écrire un test
 
 Les tests du fichier `foo.go` sont écrit dans un fichier nommé `foo_test.go`. Si la fonction à tester est `func Foo()`, sa fonction de test devra se être `func TestFoo(t *testing.T)`. Ces conventions permettent de s'y retrouver, tout simplement.
 

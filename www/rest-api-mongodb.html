@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Tutorial - REST API and MongoDB with Go</title>
+	<meta name="HandheldFriendly" content="True">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="assets/screen.css">
+	<link rel="stylesheet" href="assets/prism.css">
+</head>
+
+<body class="post-template tag-getting-started">
+	<div class="site-wrapper">
+		<main id="site-main" class="site-main outer">
+			<div class="inner">
+				<article class="post-full post tag-getting-started ">
+					<header class="post-full-header">
+						<h1 class="post-full-title">REST API and MongoDB with Go</h1>
+					</header>
+
+					<figure class="post-full-image">
+						<img src="assets/cover3.jpg">
+					</figure>
+
+					<section class="post-full-content">
+						<div class="post-content">
+							
+							<p>L&rsquo;objectif de cette formation est de mettre en place une API REST simple en Go, qui effectue des opérations basiques (recherche, ajout, modification, suppression) sur une base de données MongoDB. Une approche en TDD (<em>Test Driven Development</em>) est adoptée pour la confection des routes de l&rsquo;API.</p>
+
+<h2>Préparation</h2>
+
+<h3>Installation de Go v11</h3>
+
+<p>Sous Ubuntu, pour installer la dernière version de Go, tu peux utiliser un <em>ppa</em>&nbsp;:</p>
+
+<pre><code class="language-bash">sudo add-apt-repository ppa:gophers/archive
+sudo apt update
+sudo apt install golang-1.11
+</code></pre>
+
+<p>Ajoute ensuite la ligne suivante à ton .bashrc (ou ton .zshrc si tu utilises zsh)&nbsp;:</p>
+
+<p><code>export PATH=$PATH:/usr/lib/go-1.11/bin:$HOME/go/bin</code></p>
+
+<p>Si tu utilises un autre OS, tu peux toujours suivre les instructions d&rsquo;installation sur le <a href="https://golang.org/doc/install">site officiel</a>.</p>
+
+
+							
+							<div class="card" style="margin:15px 0">
+								<h3 class="card-title">Guide</h3>
+
+								<ul>
+<li>Exécute la commande <code>go version</code> et vérifie le résultat (<code>go version go1.11.2 linux/amd64</code>)</li>
+</ul>
+
+
+							</div>
+							
+							
+							<h3>Environnement de développement</h3>
+
+<p>L&rsquo;éditeur de code recommandé pour Go est Visual Studio Code. Télécharge-le depuis le <a href="https://code.visualstudio.com/">site officiel</a>.</p>
+
+<p>Il te faudra aussi installer l&rsquo;extension <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode.Go"><strong>Go</strong></a> pour VSCode.</p>
+
+<p><em>ProTip</em> : Pour pouvoir rapidement tester des programmes simples en Go, tu peux visiter <a href="https://play.golang.org/">The Go Playground</a> qui te permet de compiler du code en ligne.</p>
+
+<p>Pour le développement de serveurs, il est également recommandé d&rsquo;utiliser un petit outil qui reconstruit ton projet dès que tu apportes des modification au code (un équivalent de <em>nodemon</em> pour NodeJS). En Go, tu peux utiliser <a href="https://github.com/c9s/gomon">gomon</a>. Lance simplement la commande suivante&nbsp;:</p>
+
+<pre><code class="language-bash">gomon
+</code></pre>
+
+<p>Pour tester les routes du serveur, peu importe leur méthode, il sera nécessaire d&rsquo;utiliser un outil tel que <em>Postman</em>.</p>
+
+
+							
+							
+							<h3>Les fondations</h3>
+
+<p>Afin de te familiariser avec Go ou d&rsquo;en réviser les bases, regarde du coté de la première partie de la formation <a href="/game-of-life">Jeu de la Vie</a></p>
+
+<p>La présente formation est centrée sur l&rsquo;usage de la concurrence au sein d&rsquo;un programme Go. Une explication détaillée du fonctionnement des éléments de langage s&rsquo;y rapportant sera apportée tout au long de la formation.</p>
+
+
+							
+							<div class="card" style="margin:15px 0">
+								<h3 class="card-title">Guide</h3>
+
+								<ul>
+<li>Assure toi de connaître les bases du Go (variables, types, boucles)</li>
+</ul>
+
+
+							</div>
+							
+							
+							<h3>Les structures JSON</h3>
+
+<p>Go permet de définir des structures, assez semblables aux structures en C. Un avantage des structures en Go est la possibilité de décorer ses champs pour permettre la <em>sérialisation</em> de la structure selon divers formats.</p>
+
+<p>Soit la structure suivante&nbsp;:</p>
+
+<pre><code class="language-go">type Message struct {
+	Content string `json:&quot;content&quot;`
+}
+</code></pre>
+
+<p>L&rsquo;instruction <code>json:&quot;content&quot;</code> permet à l&rsquo;encodeur JSON de savoir que l&rsquo;attribut <code>Content</code> de la structure doit être encodé dans le champ JSON <code>content</code>, et au décodeur JSON de savoir que le champ <code>content</code> du JSON doit être assigné à l&rsquo;attribut <code>Content</code> de la structure.</p>
+
+<h2>1 - Le serveur</h2>
+
+<h3>Echo !</h3>
+
+<p>Go est fourni avec une librairie standard très complète, qui met à disposition un ensemble de fonctions et de types utiles à la programmation serveur. Cependant, des <em>frameworks</em> tels qu&rsquo;<a href="https://echo.labstack.com/guide">Echo</a> ont vu le jour pour simplifier la programmation de serveurs HTTP, en proposant une interface proche d&rsquo;<em>Express</em> en NodeJS.</p>
+
+<p>Le code d&rsquo;exemple ci-dessous est très simple. Un serveur est instancié, une route GET &ldquo;Hello, World!&rdquo; basique lui est rattachée et le serveur est finalement lancé sur le port 1323.</p>
+
+<pre><code class="language-go">package main
+
+import (
+	&quot;github.com/labstack/echo&quot;
+)
+
+func main() {
+	e := echo.New()
+	e.GET(&quot;/&quot;, func(c echo.Context) error {
+		return c.String(200, &quot;Hello, World!&quot;)
+	})
+	e.Logger.Fatal(e.Start(&quot;:1323&quot;))
+}
+</code></pre>
+
+
+							
+							<div class="card" style="margin:15px 0">
+								<h3 class="card-title">Guide</h3>
+
+								<ul>
+<li>Installe Echo <code>go get -u github.com/labstack/echo/...</code></li>
+<li>Crée un fichier <code>server.go</code></li>
+<li>Tape le code permettant d&rsquo;afficher &ldquo;Hello, World!&rdquo;</li>
+<li>Vérifie que <code>gomon</code> a bien relancé le serveur</li>
+<li>Visite <code>localhost:1323</code> et vérifie que le message &ldquo;Hello, World!&rdquo; s&rsquo;affiche</li>
+</ul>
+
+
+							</div>
+							
+							
+							<h3>Effectuer des tests</h3>
+
+<p>L&rsquo;un des avantages du langage Go est qu&rsquo;il n&rsquo;est pas qu&rsquo;un simple langage avec son compilateur. Go est fourni avec de nombreux outils (la commande <code>go</code> les liste). Un de ces outils est un pipeline de tests automatiques.</p>
+
+<h4>Ecrire un test</h4>
+
+<p>Les tests du fichier <code>foo.go</code> sont écrit dans un fichier nommé <code>foo_test.go</code>. Si la fonction à tester est <code>func Foo()</code>, sa fonction de test devra se être <code>func TestFoo(t *testing.T)</code>. Ces conventions permettent de s&rsquo;y retrouver, tout simplement.</p>
+
+<p>Imaginons que l&rsquo;on souhaite tester la fonction <code>Square(x int) int</code> qui retourne, ou du moins est censé retourner, le carré de <code>x</code>. En utilisant un package tel que <code>github.com/stretchr/testify/assert</code>, on peut proposer le test suivant&nbsp;:</p>
+
+<pre><code class="language-go">func TestSquare(t *testing.T) {
+	assert.Equal(t, 100, Square(10), &quot;Must be equal&quot;)
+	assert.Equal(t, 25, Square(-5), &quot;Must be equal&quot;)
+}
+</code></pre>
+
+<h4>Lancer les test</h4>
+
+<p>Il suffit de lancer la commande suivante&nbsp;:</p>
+
+<pre><code class="language-bash">go test
+</code></pre>
+
+<p>L&rsquo;outil de test détecte les fichiers de tests, et lance les tests qui s&rsquo;y trouvent.</p>
+
+<p>Depuis Visual Studio Code, l&rsquo;intégration avancée du langage Go permet également de lancer un test en particulier en cliquant sur le lien <code>run test</code> qui apparaît en haut de chaque fonction de test.</p>
+
+
+							
+							<div class="card" style="margin:15px 0">
+								<h3 class="card-title">Guide</h3>
+
+								<ul>
+<li>Familiarise-toi avec les tests en Go</li>
+<li>Teste les fonctions de ton choix</li>
+</ul>
+
+
+							</div>
+							
+							
+							<h3>Application du TDD au développement serveur</h3>
+
+<p>Le TDD est un principe de développement qui consiste à tester une fonctionnalité avant de l&rsquo;implémenter. L&rsquo;implémentation sera réussie quand tous les tests prévus sont passés.</p>
+
+<p>Nous allons appliquer ce principe pour l&rsquo;implémentation des routes de l&rsquo;API. Il nous faut cependant préparer un peu le terrain pour rendre nos tests simples et efficaces.</p>
+
+<h4>Le routeur</h4>
+
+<p>Afin de pouvoir tester le routeur, ce dernier ne peut pas rester dans la fonction <code>main</code>.</p>
+
+<p>Le routeur sera donc placé dans un fichier <code>routes.go</code>, dans une fonction de la sorte&nbsp;:</p>
+
+<pre><code class="language-go">func newRouter() *echo.Echo {
+	e := echo.New()
+
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+
+	// TODO:
+	e.GET(&quot;/&quot;, ...)
+	e.POST(&quot;/&quot;, ...)
+	e.PUT(&quot;/&quot;, ...)
+	e.DELETE(&quot;/&quot;, ...)
+
+	return e
+}
+</code></pre>
+
+<p>Des middlewares ont été ajoutés pour faciliter le debug du serveur, et relancer ce denier en cas de problème.</p>
+
+<h4>Quelques fonctions utiles</h4>
+
+<p>Deux fonctions s&rsquo;avèrent utiles pour faciliter l&rsquo;implémentation des tests, en réduisant le nombre de lignes de code répétées&nbsp;:</p>
+
+<pre><code class="language-go">
+func request(method, url string, body interface{}) *httptest.ResponseRecorder {
+	e := newRouter()
+	j, _ := json.Marshal(body)
+	req, _ := http.NewRequest(method, url, bytes.NewBuffer(j))
+	req.Header.Set(&quot;Content-Type&quot;, &quot;application/json&quot;)
+	res := httptest.NewRecorder()
+	e.ServeHTTP(res, req)
+	return res
+}
+
+func response(res *httptest.ResponseRecorder, v interface{}) error {
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(body, v)
+}
+</code></pre>
+
+<ul>
+<li><p><code>request</code> permet d&rsquo;effectuer une requête de test à une certaine <code>url</code> avec une certaine <code>method</code> en spécifiant, dans le cas d&rsquo;une méthode POST ou PUT un <code>body</code> qui sera envoyé sous forme de JSON.</p></li>
+
+<li><p><code>response</code> permet de décoder la réponse obtenue du serveur sous format JSON dans une structure Go quelconque.</p></li>
+</ul>
+
+<p>Ces deux fonctions doivent se trouver dans le fichier de test.</p>
+
+<h4>Un premier test</h4>
+
+<p>L&rsquo;objectif ici est de tester la route <code>GET /</code>. Cette route prend en paramètre une <em>string</em> <code>message</code> (représenté par l&rsquo;URL <code>/?message=test_message</code>). Le serveur renvoie alors un JSON contenant le message adressé en paramètre&nbsp;:</p>
+
+<pre><code class="language-json">{
+	&quot;content&quot;: &quot;test_message&quot;
+}
+</code></pre>
+
+<p>Donnons-nous la structure suivante, qui représente la réponse du serveur, ajoutée dans <code>routes.go</code> pour cette démonstration&nbsp;:</p>
+
+<pre><code class="language-go">type Message struct {
+	Content string `json:&quot;content&quot;`
+}
+</code></pre>
+
+<p>Voici alors un test très simple, implémenté dans <code>routes_test.go</code>. Une requête de test est effectuée. On vérifie d&rsquo;abord qu&rsquo;il n&rsquo;y a pas eu d&rsquo;erreur (code <code>200</code>). La réponse est alors décodée dans la structure <code>Message</code> prévue à cet effet, et son attribut <code>Content</code> est comparé avec le message envoyé au serveur.</p>
+
+<pre><code class="language-go">func TestGetMessage(t *testing.T) {
+	// Make the request
+	res := request(&quot;GET&quot;, &quot;/?message=Salut&quot;, nil)
+	assert.Equal(t, 200, res.Code)
+
+	// Check content field
+	var answer Message
+	response(res, &amp;answer)
+	assert.Equal(t, &quot;Salut&quot;, answer.Content)
+}
+</code></pre>
+
+<p>La commande <code>go test</code> échoue alors, car le code d&rsquo;erreur reçu de la part du serveur est <code>404</code> et non pas <code>200</code>. C&rsquo;est assez normal, la route en question n&rsquo;a tout simplement pas été implémentée.</p>
+
+<p>La route peut être implémentée simplement dans <code>routes.go</code>&nbsp;:</p>
+
+<pre><code class="language-go">e.GET(&quot;/&quot;, func(c echo.Context) error {
+	return c.JSON(200, Message{c.QueryParam(&quot;message&quot;)})
+})
+</code></pre>
+
+<p><code>go test</code> termine maintenant avec succès !</p>
+
+
+							
+							<div class="card" style="margin:15px 0">
+								<h3 class="card-title">Guide</h3>
+
+								<ul>
+<li>Déplace la création du routeur dans une fonction <code>newRouteur</code> dans un nouveau fichier <code>routes.go</code></li>
+<li>Appelle la fonction <code>newRouter</code> dans <code>main</code> juste avant la ligne contenant <code>e.Start(&quot;:1323&quot;)</code></li>
+<li>Crée un fichier <code>routes_test.go</code></li>
+<li>Ajoute les deux fonctions <code>request</code> et <code>response</code> au fichier <code>routes_test.go</code></li>
+<li>Code une fonction pour tester un route simple donnée de l&rsquo;API</li>
+<li>Exécute <code>go test</code> et vérifie que le test échoue</li>
+<li>Implémente la route simple correspondant</li>
+<li>Exécute <code>go test</code> de nouveau et vérifie que le test passe (ou pas, si ton implémentation ne répond pas aux attentes de ton test)</li>
+</ul>
+
+
+							</div>
+							
+							
+							<h2>2 - La base de données</h2>
+
+<p>Laissons le serveur de coté pour le moment, et concentrons nous sur la façon dont nous allons stocker les données que l&rsquo;API REST va permettre de manipuler.</p>
+
+<p>La technologie de base de données que nous allons explorer est MongoDB. Cette technologie a l&rsquo;avantage d&rsquo;être simple à utiliser et très bien intégrée au langage Go.</p>
+
+<h3>Le modèle de données</h3>
+
+<p>Nous allons mettre en place le très classique modèle <em>User</em>. Ce <em>User</em> possède les attributs suivants&nbsp;:</p>
+
+<ul>
+<li>Un nom <code>Name</code></li>
+<li>Une adresse mail <code>Mail</code></li>
+<li>La date à laquelle l&rsquo;utilisateur est créé <code>CreatedAt</code>, de type <code>time.Time</code></li>
+<li>N&rsquo;oublions pas enfin l&rsquo;ID du <em>User</em> pour son stockage dans une base MongoDB, de type <code>bson.ObjectId</code></li>
+</ul>
+
+<p>L&rsquo;attribut ID est défini de manière un peu particulière&nbsp;:</p>
+
+<pre><code class="language-go">	ID bson.ObjectId `json:&quot;id&quot; bson:&quot;_id,omitempty&quot;`
+</code></pre>
+
+<p>Il est nécessaire de préciser comment chaque attribut est encodé en JSON (pour le serveur) et en BSON (pour la base de données). Par exemple</p>
+
+<pre><code class="language-go">	...
+	CreatedAt time.Time `json:&quot;createdAt&quot; bson:&quot;createdAt&quot;`
+</code></pre>
+
+
+							
+							<div class="card" style="margin:15px 0">
+								<h3 class="card-title">Guide</h3>
+
+								<ul>
+<li>Crée un fichier <code>model.go</code></li>
+<li>Ajoute une structure <code>UserModel</code> avec les quatre attributs explicités précédemment</li>
+<li>Spécifie le nom du champ JSON et BSON correspondant pour chaque attribut</li>
+</ul>
+
+
+							</div>
+							
+							
+							<h3>Connexion à la base de donnée</h3>
+
+<p>Le modèle défini ci-dessus représente en fait un <em>document</em> en base de données MongoBD. Pour pouvoir ajouter, rechercher, modifier et supprimer des documents, il faut au préalable se connecter à un serveur MongoDB, et choisir une collection pour y stocker les documents.</p>
+
+<p>Un &ldquo;service&rdquo; <em>User</em>, qui n&rsquo;est autre qu&rsquo;un pointeur vers la collection de <em>Users</em>, peut être défini comme suit&nbsp;:</p>
+
+<pre><code class="language-go">type UserService struct {
+	col *mgo.Collection
+}
+</code></pre>
+
+<p>Les différentes opérations effectuées sur le modèle <em>User</em> en base de données seront simplement des méthodes de <code>UserService</code>, que l&rsquo;on implémentera par la suite.</p>
+
+<p>Pour créer une nouvelle session avec le serveur MongoDB, il suffit de ces quelques lignes&nbsp;:</p>
+
+<pre><code class="language-go">session, err := mgo.Dial(&quot;localhost:27017&quot;)
+if err != nil {
+	log.Panicln(err)
+}
+</code></pre>
+
+<p>Ensuite, pour obtenir un pointeur vers la collection <em>user</em> de la base de données <em>user-db</em> afin d&rsquo;y faire des opérations, il suffit de cette ligne&nbsp;:</p>
+
+<pre><code class="language-go">col := session.DB(&quot;user-db&quot;).C(&quot;user&quot;)
+</code></pre>
+
+<p>La logique liée à la gestion de la connexion à la base de données peut être implémentée dans une fonction&nbsp;:</p>
+
+<pre><code class="language-go">func init() {
+	...
+}
+</code></pre>
+
+<p>Cette fonction a comme propriété intéressante d&rsquo;être exécutée au lancement du programme (pas besoin donc de l&rsquo;appeler depuis le main ou depuis les tests).</p>
+
+
+							
+							<div class="card" style="margin:15px 0">
+								<h3 class="card-title">Guide</h3>
+
+								<ul>
+<li>Implémente la structure <code>UserService</code> à la suite de <code>model.go</code></li>
+<li>Crée un fichier <code>db.go</code></li>
+<li>Instancie <code>User</code> de type <code>*UserService</code> comme variable globale</li>
+<li>Crée une fonction <code>init()</code></li>
+<li>Connecte-toi à la base de données et donne à l&rsquo;attribut <code>col</code> de <code>UserService</code> la valeur du pointeur vers la collection <code>user</code></li>
+</ul>
+
+
+							</div>
+							
+							
+							
+
+							
+							
+							
+
+							
+							
+							
+
+							
+							
+						</div>
+					</section>
+
+					<footer class="post-full-footer">
+						<section class="author-card">
+							<img class="author-profile-image" src="assets/ghost-icon.png" alt="Ghost">
+							<section class="author-card-content">
+								<h4 class="author-card-name">Romain Ginestou
+								</h4>
+								<p>Go Enthusiast</p>
+							</section>
+						</section>
+					</footer>
+				</article>
+			</div>
+		</main>
+
+		<div class="floating-header floating-active">
+			<div class="floating-header-title">REST API and MongoDB with Go</div>
+			<progress id="reading-progress" class="progress" value="2544" max="3801">
+				<div class="progress-container">
+					<span class="progress-bar"></span>
+				</div>
+			</progress>
+		</div>
+	</div>
+
+	<script>
+		var images = document.querySelectorAll('.kg-gallery-image img');
+		images.forEach(function (image) {
+			var container = image.closest('.kg-gallery-image');
+			var width = image.attributes.width.value;
+			var height = image.attributes.height.value;
+			var ratio = width / height;
+			container.style.flex = ratio + ' 1 0%';
+		})
+	</script>
+
+	<script src="assets/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+		crossorigin="anonymous">
+		</script>
+	<script type="text/javascript" src="assets/jquery.fitvids.js"></script>
+
+	<script>
+		$(document).ready(function () {
+			// Start fitVids
+			var $postContent = $(".post-full-content");
+			$postContent.fitVids();
+			// End fitVids
+
+			var progressBar = document.querySelector('#reading-progress');
+			var header = document.querySelector('.floating-header');
+			var title = document.querySelector('.post-full-title');
+
+			var lastScrollY = window.scrollY;
+			var lastWindowHeight = window.innerHeight;
+			var lastDocumentHeight = $(document).height();
+			var ticking = false;
+
+			function onScroll() {
+				lastScrollY = window.scrollY;
+				requestTick();
+			}
+
+			function onResize() {
+				lastWindowHeight = window.innerHeight;
+				lastDocumentHeight = $(document).height();
+				requestTick();
+			}
+
+			function requestTick() {
+				if (!ticking) {
+					requestAnimationFrame(update);
+				}
+				ticking = true;
+			}
+
+			function update() {
+				var trigger = title.getBoundingClientRect().top + window.scrollY;
+				var triggerOffset = title.offsetHeight + 35;
+				var progressMax = lastDocumentHeight - lastWindowHeight;
+
+				// show/hide floating header
+				if (lastScrollY >= trigger + triggerOffset) {
+					header.classList.add('floating-active');
+				} else {
+					header.classList.remove('floating-active');
+				}
+
+				progressBar.setAttribute('max', progressMax);
+				progressBar.setAttribute('value', lastScrollY);
+
+				ticking = false;
+			}
+
+			window.addEventListener('scroll', onScroll, { passive: true });
+			window.addEventListener('resize', onResize, false);
+
+			update();
+		});
+	</script>
+	<script src="assets/prism.js"></script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+	<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+		  messageStyle: "none",
+		  extensions: ["tex2jax.js"],
+		  jax: ["input/TeX", "output/HTML-CSS"],
+		  tex2jax: {
+			inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+			displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+			processEscapes: true
+		  },
+		  "HTML-CSS": {
+			fonts: ["TeX"],
+			scale: 85,
+		  }
+		});
+	  </script>
+</body>
+
+</html>

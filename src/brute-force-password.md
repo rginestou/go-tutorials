@@ -8,9 +8,9 @@ Distributed Password Brute Force with Go
 
 <!-- content -->
 
-Cette formation à pour objectif de réaliser un programme qui puisse trouver le plus rapidement possible, par une attaque _brute force_, le mot de passe dont on connait le hash. Il s'agira ici du hash MD5 du mot de passe.
+Cette formation à pour objectif de réaliser un programme qui puisse trouver le plus rapidement possible, par une attaque _brute force_, le mot de passe dont on connaît le hash. Il s'agira ici du hash MD5 du mot de passe.
 
-Le programme, écrit en Go, parcourt tous les mot de passes possibles, en calcule leurs hashs MD5, puis compare chacun de ces hashs avec le hash à attaquer, jusqu'à trouver le hash identique, et donc le mot de passe.
+Le programme, écrit en Go, parcourt tous les mot de passes possibles, en calcule leurs hash MD5, puis compare chacun de ces hash avec le hash à attaquer, jusqu'à trouver le hash identique, et donc le mot de passe.
 
 Dans une optique de performance, l'espace de recherche du mot de passe sera réparti sur plusieurs coeurs de la machine de calcul, voire à terme sur plusieurs machines, divisant d'autant le temps nécessaire à trouver le mot de passe.
 
@@ -57,7 +57,7 @@ La présente formation est centrée sur l'usage de la concurrence au sein d'un p
 
 <!-- guide -->
 
-* Assure toi de connaitre les bases du Go (variables, types, boucles)
+* Assure toi de connaître les bases du Go (variables, types, boucles)
 
 <!-- content -->
 
@@ -69,7 +69,7 @@ Plusieurs fonctions basiques pour manipuler les hash de mots de passe doivent ê
 
 Par la suite, le **hash** d'un mot de passe sera implicitement supposé être un **tableau de _byte_** (`[]byte`), et non sa représentation hexadécimale sous forme de string.
 
-Pour ce faire, les packages `crypto/md5` et `encoding/hex` sont de bons aliés. Ils proposent, entre autres, les fonctions suivantes.
+Pour ce faire, les packages `crypto/md5` et `encoding/hex` sont de bons alliés. Ils proposent, entre autres, les fonctions suivantes.
 
 Obtenir hash à partir d'un `pass`, donné comme un tableau de _byte_ (`[]byte`) :
 
@@ -134,7 +134,7 @@ L'appel à la fonction d'incrémentation devra renvoyer `true` si l'incrémentat
 
 Afin de permettre à l'utilisateur d'interagir avec le programme, une bonne solution est d'avoir recours à des _flags_. Ce sont les fameux arguments passés à la ligne de commande : `my_program -flag1 -flag2`.
 
-Bonne nouvelle, la gestion de ces _flags_ en Go est simple. On donne ci-dessous un usage basique pour des _flags_ bouléens, mais [d'autres types sont possibles](https://gobyexample.com/command-line-flags) :
+Bonne nouvelle, la gestion de ces _flags_ en Go est simple. On donne ci-dessous un usage basique pour des _flags_ booléens, mais [d'autres types sont possibles](https://gobyexample.com/command-line-flags) :
 
 ```go
 flag1Ptr := flag.Bool("flag1", false, "My first flag")
@@ -185,9 +185,9 @@ pass, _ := terminal.ReadPassword(0)
 
 ### Worker
 
-L'objectif est désormais de constuire, en quelques lignes de code, une première fonction simple de _brute-force_ de mot de passe, qui s'exécute dès lors que le _flag_ `worker` est passé en argument du programme.
+L'objectif est désormais de construire, en quelques lignes de code, une première fonction simple de _brute-force_ de mot de passe, qui s'exécute dès lors que le _flag_ `worker` est passé en argument du programme.
 
-L'attaque à implémenter est relativement simple : on se donne une longueur $\ell$ qui caractérise les mots de passe à explorer. Partant du mot de passe `[lb lb ... lb lb]`, on compare le hash du mot de passe courant au hash cible entré par l'utilisateur. Tant que les hashs ne sont pas égaux et que l'espace n'a pas été totalement exploré, le mot de passe est incrémenté à l'aide de la fonction `incrementPass` codée précédement.
+L'attaque à implémenter est relativement simple : on se donne une longueur $\ell$ qui caractérise les mots de passe à explorer. Partant du mot de passe `[lb lb ... lb lb]`, on compare le hash du mot de passe courant au hash cible entré par l'utilisateur. Tant que les hash ne sont pas égaux et que l'espace n'a pas été totalement exploré, le mot de passe est incrémenté à l'aide de la fonction `incrementPass` codée précédemment.
 
 La fonction `Scanf` du package `fmt` permet de récupérer l'entrée utilisateur (ici le hash à attaquer). Attention, l'entrée est la représentation hexadécimale du hash, et non directement le tableau de _bytes_ exploitable.
 
@@ -196,7 +196,7 @@ var str string
 fmt.Scanf("%s", &str)
 ```
 
-Pour **comparer deux tableaux de _bytes_**, il est recommendé d'utiliser la fonction suivante :
+Pour **comparer deux tableaux de _bytes_**, il est recommandé d'utiliser la fonction suivante :
 
 ```go
 bytes.Equal(hash1, hash2)
@@ -225,10 +225,10 @@ Le nombre total de mots de passe à tester est potentiellement très grand. On l
 
 <!-- guide -->
 
-* Crée une fonction `func dividePass(l int, n int) ([][]byte, uint64, uint64)` dans le fichier `hash.go`. Cette fonction prend en paramètre la longueur $\ell$ des mots de passe à tester et le nombre $n$ de processus sur lesquel répartir l'attaque. La fonction renvoie un tableau de $n$ mots de passes initiaux donc chaque entrée sera fournie à chaque processus. La fonction retourne également le nombre de mots de passes à tester par processus, ainsi que le nombre total de mots de passe possibles.
+* Crée une fonction `func dividePass(l int, n int) ([][]byte, uint64, uint64)` dans le fichier `hash.go`. Cette fonction prend en paramètre la longueur $\ell$ des mots de passe à tester et le nombre $n$ de processus sur lesquels répartir l'attaque. La fonction renvoie un tableau de $n$ mots de passes initiaux donc chaque entrée sera fournie à chaque processus. La fonction retourne également le nombre de mots de passes à tester par processus, ainsi que le nombre total de mots de passe possibles.
 * Calcule `p` le nombre de mots de passe possibles, en stockant les puissances successives nécessaires au calcul dans un tableau `powers`
 * Calcule `r` le nombre de mots de passes à tester par processus
-* Constuit `passes` un tableau de mots de passe
+* Construis `passes` un tableau de mots de passe
 * Remplis les mots de passe initiaux à partir du compteur de mots de passes courant
 
 <!-- content -->
