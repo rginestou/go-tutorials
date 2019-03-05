@@ -67,7 +67,7 @@ sudo apt install golang-1.11
 
 <p><em>ProTip</em> : Pour pouvoir rapidement tester des programmes simples en Go, tu peux visiter <a href="https://play.golang.org/">The Go Playground</a> qui te permet de compiler du code en ligne.</p>
 
-<p>Pour le développement de serveurs, il est également recommandé d&rsquo;utiliser un petit outil qui reconstruit ton projet dès que tu apportes des modification au code (un équivalent de <em>nodemon</em> pour NodeJS). En Go, tu peux utiliser <a href="https://github.com/c9s/gomon">gomon</a>. Lance simplement la commande suivante&nbsp;:</p>
+<p>Pour le développement de serveurs, il est également recommandé d&rsquo;utiliser un petit outil qui reconstruit ton projet dès que tu apportes des modification au code (un équivalent de <em>nodemon</em> pour NodeJS). En Go, tu peux utiliser <a href="https://github.com/c9s/gomon">gomon</a>. Une fois installé, lance simplement la commande suivante&nbsp;:</p>
 
 <pre><code class="language-bash">gomon
 </code></pre>
@@ -80,8 +80,6 @@ sudo apt install golang-1.11
 							<h3>Les fondations</h3>
 
 <p>Afin de te familiariser avec Go ou d&rsquo;en réviser les bases, regarde du coté de la première partie de la formation <a href="/game-of-life">Jeu de la Vie</a></p>
-
-<p>La présente formation est centrée sur l&rsquo;usage de la concurrence au sein d&rsquo;un programme Go. Une explication détaillée du fonctionnement des éléments de langage s&rsquo;y rapportant sera apportée tout au long de la formation.</p>
 
 
 							
@@ -192,7 +190,7 @@ func main() {
 							
 							<h3>Application du TDD au développement serveur</h3>
 
-<p>Le TDD est un principe de développement qui consiste à tester une fonctionnalité avant de l&rsquo;implémenter. L&rsquo;implémentation sera réussie quand tous les tests prévus sont passés.</p>
+<p>Le TDD est un principe de développement qui consiste à tester une fonctionnalité avant de l&rsquo;implémenter. L&rsquo;implémentation est réussie quand tous les tests prévus sont passés.</p>
 
 <p>Nous allons appliquer ce principe pour l&rsquo;implémentation des routes de l&rsquo;API. Il nous faut cependant préparer un peu le terrain pour rendre nos tests simples et efficaces.</p>
 
@@ -284,7 +282,7 @@ func response(res *httptest.ResponseRecorder, v interface{}) error {
 
 <p>La commande <code>go test</code> échoue alors, car le code d&rsquo;erreur reçu de la part du serveur est <code>404</code> et non pas <code>200</code>. C&rsquo;est assez normal, la route en question n&rsquo;a tout simplement pas été implémentée.</p>
 
-<p>La route peut être implémentée simplement dans <code>routes.go</code>&nbsp;:</p>
+<p>Cette route peut être ajoutée simplement à <code>routes.go</code>&nbsp;:</p>
 
 <pre><code class="language-go">e.GET(&quot;/&quot;, func(c echo.Context) error {
 	return c.JSON(200, Message{c.QueryParam(&quot;message&quot;)})
@@ -293,7 +291,7 @@ func response(res *httptest.ResponseRecorder, v interface{}) error {
 
 <p><code>go test</code> termine maintenant avec succès !</p>
 
-<p>Nous verrons les tests de routes plus en détails par la suite !</p>
+<p>Nous étudierons les tests de routes plus en détails par la suite !</p>
 
 
 							
@@ -358,7 +356,7 @@ func response(res *httptest.ResponseRecorder, v interface{}) error {
 							</div>
 							
 							
-							<h3>Connexion à la base de donnée</h3>
+							<h3>Connexion à la base de données</h3>
 
 <p>Le modèle défini ci-dessus représente en fait un <em>document</em> en base de données MongoBD. Pour pouvoir ajouter, rechercher, modifier et supprimer des documents, il faut au préalable se connecter à un serveur MongoDB, et choisir une collection pour y stocker les documents.</p>
 
@@ -412,7 +410,7 @@ if err != nil {
 							
 							<h3>Définition des méthodes du modèle</h3>
 
-<p>Nous avons désormais un modèle de donné (représentatif d&rsquo;un <em>document</em>) ainsi qu&rsquo;une connexion à une collection de la base de données MongoDB. L&rsquo;étape suivante consiste à se donner des méthodes pour manipuler les documents en base de données.</p>
+<p>Nous avons désormais un modèle de donnée (représentatif d&rsquo;un <em>document</em>) ainsi qu&rsquo;une connexion à une collection de la base de données MongoDB. L&rsquo;étape suivante consiste à se donner des méthodes pour manipuler les documents en base de données.</p>
 
 <p>Nous allons suivre le motif CRUD&nbsp;:</p>
 
@@ -444,7 +442,7 @@ if err != nil {
 							
 							<h3>Implémentation des méthodes</h3>
 
-<p>Depuis l&rsquo;intérieur de ces méthodes, puisqu&rsquo;elles sont rattachées à <code>UserService</code>, tu as accès à <code>s.col</code> qui est un pointeur vers la collection qui nous intéresse. Pour connaitre toutes les méthodes accessible via le <em>driver</em> mgo, rendez-vous sur la <a href="https://godoc.org/gopkg.in/mgo.v2">documentation</a> de celui-ci. Voici néanmoins les méthodes dont tu auras besoin&nbsp;:</p>
+<p>Depuis l&rsquo;intérieur de ces méthodes, puisqu&rsquo;elles sont rattachées à <code>UserService</code>, tu as accès à <code>s.col</code> qui est un pointeur vers la collection qui nous intéresse. Pour connaître toutes les méthodes accessible via le <em>driver</em> mgo, rendez-vous sur la <a href="https://godoc.org/gopkg.in/mgo.v2">documentation</a> de celui-ci. Voici néanmoins les méthodes dont tu auras besoin&nbsp;:</p>
 
 <pre><code class="language-go">user := UserModel{}
 err = s.col.Find(bson.M{&quot;mail&quot;: mail}).One(&amp;user)
@@ -536,7 +534,7 @@ e.DELETE(&quot;/&quot;, UserDELETE)
 }
 </code></pre>
 
-<p><em>ProTip</em> : Tester son application ne devrait pas affecter la base de donnée de production (ou du moins la base de données utilisée pour le développement). Avec go, il est aisé de savoir si le programme est exécuté en conditions de test ou pas, en vérifiant la présence du flag <code>test.v</code>. Dès lors, il suffit de changer de nom de base de de données comme ceci&nbsp;:</p>
+<p><em>ProTip</em> : Tester son application ne devrait pas affecter la base de données de production (ou du moins la base de données utilisée pour le développement). Avec Go, il est aisé de savoir si le programme est exécuté en conditions de test ou pas, en vérifiant la présence du flag <code>test.v</code>. Dès lors, il suffit de changer de nom de base de de données comme ceci&nbsp;:</p>
 
 <pre><code class="language-go">DBName := &quot;user-db&quot;
 if flag.Lookup(&quot;test.v&quot;) != nil {

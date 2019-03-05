@@ -42,7 +42,7 @@ Il te faudra aussi installer l'extension [**Go**](https://marketplace.visualstud
 
 *ProTip* : Pour pouvoir rapidement tester des programmes simples en Go, tu peux visiter [The Go Playground](https://play.golang.org/) qui te permet de compiler du code en ligne.
 
-Pour le développement de serveurs, il est également recommandé d'utiliser un petit outil qui reconstruit ton projet dès que tu apportes des modification au code (un équivalent de _nodemon_ pour NodeJS). En Go, tu peux utiliser [gomon](https://github.com/c9s/gomon). Lance simplement la commande suivante :
+Pour le développement de serveurs, il est également recommandé d'utiliser un petit outil qui reconstruit ton projet dès que tu apportes des modification au code (un équivalent de _nodemon_ pour NodeJS). En Go, tu peux utiliser [gomon](https://github.com/c9s/gomon). Une fois installé, lance simplement la commande suivante :
 
 ```bash
 gomon
@@ -55,8 +55,6 @@ Pour tester les routes du serveur, peu importe leur méthode, il sera nécessair
 ### Les fondations
 
 Afin de te familiariser avec Go ou d'en réviser les bases, regarde du coté de la première partie de la formation [Jeu de la Vie](/game-of-life)
-
-La présente formation est centrée sur l'usage de la concurrence au sein d'un programme Go. Une explication détaillée du fonctionnement des éléments de langage s'y rapportant sera apportée tout au long de la formation.
 
 <!-- guide -->
 
@@ -150,7 +148,7 @@ Depuis Visual Studio Code, l'intégration avancée du langage Go permet égaleme
 
 ### Application du TDD au développement serveur
 
-Le TDD est un principe de développement qui consiste à tester une fonctionnalité avant de l'implémenter. L'implémentation sera réussie quand tous les tests prévus sont passés.
+Le TDD est un principe de développement qui consiste à tester une fonctionnalité avant de l'implémenter. L'implémentation est réussie quand tous les tests prévus sont passés.
 
 Nous allons appliquer ce principe pour l'implémentation des routes de l'API. Il nous faut cependant préparer un peu le terrain pour rendre nos tests simples et efficaces.
 
@@ -245,7 +243,7 @@ func TestGetMessage(t *testing.T) {
 
 La commande `go test` échoue alors, car le code d'erreur reçu de la part du serveur est `404` et non pas `200`. C'est assez normal, la route en question n'a tout simplement pas été implémentée.
 
-La route peut être implémentée simplement dans `routes.go` :
+Cette route peut être ajoutée simplement à `routes.go` :
 
 ```go
 e.GET("/", func(c echo.Context) error {
@@ -255,7 +253,7 @@ e.GET("/", func(c echo.Context) error {
 
 `go test` termine maintenant avec succès !
 
-Nous verrons les tests de routes plus en détails par la suite !
+Nous étudierons les tests de routes plus en détails par la suite !
 
 <!-- guide -->
 
@@ -306,7 +304,7 @@ Il est nécessaire de préciser comment chaque attribut est encodé en JSON (pou
 
 <!-- content -->
 
-### Connexion à la base de donnée
+### Connexion à la base de données
 
 Le modèle défini ci-dessus représente en fait un _document_ en base de données MongoBD. Pour pouvoir ajouter, rechercher, modifier et supprimer des documents, il faut au préalable se connecter à un serveur MongoDB, et choisir une collection pour y stocker les documents.
 
@@ -357,7 +355,7 @@ Cette fonction a comme propriété intéressante d'être exécutée au lancement
 
 ### Définition des méthodes du modèle
 
-Nous avons désormais un modèle de donné (représentatif d'un _document_) ainsi qu'une connexion à une collection de la base de données MongoDB. L'étape suivante consiste à se donner des méthodes pour manipuler les documents en base de données.
+Nous avons désormais un modèle de donnée (représentatif d'un _document_) ainsi qu'une connexion à une collection de la base de données MongoDB. L'étape suivante consiste à se donner des méthodes pour manipuler les documents en base de données.
 
 Nous allons suivre le motif CRUD :
 
@@ -380,7 +378,7 @@ Ces méthodes sont rattachées à la structure `UserService`, dont l'instance gl
 
 ### Implémentation des méthodes
 
-Depuis l'intérieur de ces méthodes, puisqu'elles sont rattachées à `UserService`, tu as accès à `s.col` qui est un pointeur vers la collection qui nous intéresse. Pour connaitre toutes les méthodes accessible via le _driver_ mgo, rendez-vous sur la [documentation](https://godoc.org/gopkg.in/mgo.v2) de celui-ci. Voici néanmoins les méthodes dont tu auras besoin :
+Depuis l'intérieur de ces méthodes, puisqu'elles sont rattachées à `UserService`, tu as accès à `s.col` qui est un pointeur vers la collection qui nous intéresse. Pour connaître toutes les méthodes accessible via le _driver_ mgo, rendez-vous sur la [documentation](https://godoc.org/gopkg.in/mgo.v2) de celui-ci. Voici néanmoins les méthodes dont tu auras besoin :
 
 ```go
 user := UserModel{}
@@ -461,7 +459,7 @@ var johnDoe = UserModel{
 }
 ```
 
-_ProTip_ : Tester son application ne devrait pas affecter la base de donnée de production (ou du moins la base de données utilisée pour le développement). Avec go, il est aisé de savoir si le programme est exécuté en conditions de test ou pas, en vérifiant la présence du flag `test.v`. Dès lors, il suffit de changer de nom de base de de données comme ceci :
+_ProTip_ : Tester son application ne devrait pas affecter la base de données de production (ou du moins la base de données utilisée pour le développement). Avec Go, il est aisé de savoir si le programme est exécuté en conditions de test ou pas, en vérifiant la présence du flag `test.v`. Dès lors, il suffit de changer de nom de base de de données comme ceci :
 
 ```go
 DBName := "user-db"
