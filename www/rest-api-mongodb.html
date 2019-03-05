@@ -293,6 +293,8 @@ func response(res *httptest.ResponseRecorder, v interface{}) error {
 
 <p><code>go test</code> termine maintenant avec succès !</p>
 
+<p>Nous verrons les tests de routes plus en détails par la suite !</p>
+
 
 							
 							<div class="card" style="margin:15px 0">
@@ -408,15 +410,202 @@ if err != nil {
 							</div>
 							
 							
-							
+							<h3>Définition des méthodes du modèle</h3>
+
+<p>Nous avons désormais un modèle de donné (représentatif d&rsquo;un <em>document</em>) ainsi qu&rsquo;une connexion à une collection de la base de données MongoDB. L&rsquo;étape suivante consiste à se donner des méthodes pour manipuler les documents en base de données.</p>
+
+<p>Nous allons suivre le motif CRUD&nbsp;:</p>
+
+<ul>
+<li><em>Create</em> pour ajouter de nouveaux documents à la collection</li>
+<li><em>Read</em> pour trouver des documents existants dans la collection</li>
+<li><em>Update</em> pour modifier les documents de la collection</li>
+<li><em>Delete</em> pour supprimer des documents de la collection</li>
+</ul>
+
+<p>Ces méthodes sont rattachées à la structure <code>UserService</code>, dont l&rsquo;instance globale est <code>User</code>. Cela permet, depuis le reste du programme, et plus spécifiquement dans les <em>controllers</em> où nous en auront besoin, d&rsquo;appeler directement <code>User.MyMethod(...)</code> par exemple.</p>
+
 
 							
+							<div class="card" style="margin:15px 0">
+								<h3 class="card-title">Guide</h3>
+
+								<ul>
+<li>Positionne toi à la suite de <code>model.go</code>, en dessous de la déclaration de <code>UserService</code></li>
+<li><em>Create</em> : Définie la fonction <code>func (s *UserService) Get(mail string) (UserModel, error)</code></li>
+<li><em>Read</em> : Définie la fonction <code>func (s *UserService) Add(user UserModel) error</code></li>
+<li><em>Update</em> : Définie la fonction <code>func (s *UserService) Update(mail string, user UserModel) error</code></li>
+<li><em>Delete</em> : Définie la fonction <code>func (s *UserService) Delete(mail string) error</code></li>
+</ul>
+
+
+							</div>
 							
 							
+							<h3>Implémentation des méthodes</h3>
+
+<p>Depuis l&rsquo;intérieur de ces méthodes, puisqu&rsquo;elles sont rattachées à <code>UserService</code>, tu as accès à <code>s.col</code> qui est un pointeur vers la collection qui nous intéresse. Pour connaitre toutes les méthodes accessible via le <em>driver</em> mgo, rendez-vous sur la <a href="https://godoc.org/gopkg.in/mgo.v2">documentation</a> de celui-ci. Voici néanmoins les méthodes dont tu auras besoin&nbsp;:</p>
+
+<pre><code class="language-go">user := UserModel{}
+err = s.col.Find(bson.M{&quot;mail&quot;: mail}).One(&amp;user)
+
+err = s.col.Insert(user)
+
+err = s.col.Update(bson.M{&quot;mail&quot;: mail}, user)
+
+err = s.col.Remove(bson.M{&quot;mail&quot;: mail})
+</code></pre>
+
+<p>Par ailleurs, n&rsquo;oublie pas, lors de la création d&rsquo;un document, de lui attribuer un nouvel ID, et de marquer la date de sa création&nbsp;:</p>
+
+<pre><code class="language-go">user.ID = bson.NewObjectId()
+user.CreatedAt = time.Now()
+</code></pre>
+
 
 							
+							<div class="card" style="margin:15px 0">
+								<h3 class="card-title">Guide</h3>
+
+								<ul>
+<li>Implémente les quatre méthodes de <code>UserService</code></li>
+</ul>
+
+
+							</div>
 							
 							
+							<h2>3 - Les routes</h2>
+
+<p>Nous avons mis en place le serveur ainsi que le modèle de base de données <em>User</em>. Il ne manque plus qu&rsquo;à implémenter le pont entre les deux, à savoir les routes et leurs <em>controllers</em> qui, à partir des requêtes de l&rsquo;extérieur, interagissent avec le modèle <em>User</em> en conséquences.</p>
+
+<h3>Définition</h3>
+
+<p>Les quatre routes (GET, POST, PUT, DELETE) sont rattachées au serveur Echo dans la fonction <code>newRouter()</code>&nbsp;:</p>
+
+<pre><code class="language-go">...
+e.GET(&quot;/&quot;, UserGET)
+e.POST(&quot;/&quot;, UserPOST)
+e.PUT(&quot;/&quot;, UserPUT)
+e.DELETE(&quot;/&quot;, UserDELETE)
+</code></pre>
+
+<p>Chaque définition de route prend en paramètre l&rsquo;URL de la route (<code>/</code> ici) ainsi qu&rsquo;une fonction de <em>callback</em>, qui traite la requête.</p>
+
+<p>Une telle fonction de <em>callback</em>, aussi appelée <em>controller</em> possède la signature suivante&nbsp;:</p>
+
+<pre><code class="language-go">func callback(c echo.Context) error {
+	...
+}
+</code></pre>
+
+<p>Nous implémenterons ces <em>controllers</em> plus tard.</p>
+
+
+							
+							<div class="card" style="margin:15px 0">
+								<h3 class="card-title">Guide</h3>
+
+								<ul>
+<li>Définis les routes dans <code>routes.go</code></li>
+<li>Déclare les différents <em>controllers</em> à la suite, ou bien dans un nouveau fichier <code>controllers.go</code></li>
+</ul>
+
+
+							</div>
+							
+							
+							<h3>Tests</h3>
+
+<p>Suivons les principes du TDD, et implémentons nos tests avant de compléter la logique de notre API.</p>
+
+<p>Il te faut rédiger quatre tests, un par route. La structure du test est simple&nbsp;:</p>
+
+<ul>
+<li>Remise à zéro la base de données et ajoute les documents nécessaires au test courant</li>
+<li>Requête au serveur</li>
+<li>Test du retour serveur</li>
+<li>Test éventuel du contenu de la base de données</li>
+</ul>
+
+<p>Tu peux définir des <em>Users</em> globaux pour faciliter les tests&nbsp;:</p>
+
+<pre><code class="language-go">var johnDoe = UserModel{
+	Name: &quot;John Doe&quot;,
+	Mail: &quot;john@doe.fr&quot;,
+}
+</code></pre>
+
+<p><em>ProTip</em> : Tester son application ne devrait pas affecter la base de donnée de production (ou du moins la base de données utilisée pour le développement). Avec go, il est aisé de savoir si le programme est exécuté en conditions de test ou pas, en vérifiant la présence du flag <code>test.v</code>. Dès lors, il suffit de changer de nom de base de de données comme ceci&nbsp;:</p>
+
+<pre><code class="language-go">DBName := &quot;user-db&quot;
+if flag.Lookup(&quot;test.v&quot;) != nil {
+	DBName = &quot;user-db_test&quot;
+}
+</code></pre>
+
+
+							
+							<div class="card" style="margin:15px 0">
+								<h3 class="card-title">Guide</h3>
+
+								<ul>
+<li>Change de nom de base de données si le programme est lancé en conditions de tests</li>
+<li>Définis des <em>Users</em> de test</li>
+<li>Implémente des fonctions de tests en s&rsquo;inspirant du test simple effectué en première partie</li>
+</ul>
+
+
+							</div>
+							
+							
+							<h3>Implémentation</h3>
+
+<p>Chaque <em>controller</em> prend en paramètre un contexte <code>c echo.Context</code>.
+Ce contexte permet d&rsquo;accéder au contenu de la requête&nbsp;:</p>
+
+<pre><code class="language-go">// Access query params
+mail := c.QueryParam(&quot;mail&quot;)
+
+// Put the query body into a struct
+var s MyStruct
+if err := c.Bind(&amp;s); err != nil {
+	return err
+}
+</code></pre>
+
+<p>Mais également de définir la réponse du serveur&nbsp;:</p>
+
+<pre><code class="language-go">// Respond with string
+return c.String(200, &quot;Hello, World!&quot;)
+
+// Respond with JSON
+return c.JSON(200, user)
+
+// Respond with status code only
+return c.NoContent(401)
+</code></pre>
+
+
+							
+							<div class="card" style="margin:15px 0">
+								<h3 class="card-title">Guide</h3>
+
+								<ul>
+<li>Code le contenu des <em>controllers</em> en utilisant les fonctions mises à disposition par Echo et les méthodes de <code>User</code></li>
+<li>Teste ton implémentation au fur et à mesure grâce aux tests rédigés précédemment</li>
+</ul>
+
+
+							</div>
+							
+							
+							<h3>Essai grandeur nature</h3>
+
+<p>Il t&rsquo;est désormais possible d&rsquo;interagir avec l&rsquo;API depuis ton navigateur ou Postman.</p>
+
+<p>Tu peux également déployer ce serveur très simplement sur une VM ou une machine physique en construisant l&rsquo;exécutable et en le copiant sur la machine de destination.</p>
+
 
 							
 							

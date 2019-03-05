@@ -255,6 +255,8 @@ e.GET("/", func(c echo.Context) error {
 
 `go test` termine maintenant avec succès !
 
+Nous verrons les tests de routes plus en détails par la suite !
+
 <!-- guide -->
 
 * Déplace la création du routeur dans une fonction `newRouteur` dans un nouveau fichier `routes.go`
@@ -353,12 +355,167 @@ Cette fonction a comme propriété intéressante d'être exécutée au lancement
 
 <!-- content -->
 
+### Définition des méthodes du modèle
+
+Nous avons désormais un modèle de donné (représentatif d'un _document_) ainsi qu'une connexion à une collection de la base de données MongoDB. L'étape suivante consiste à se donner des méthodes pour manipuler les documents en base de données.
+
+Nous allons suivre le motif CRUD :
+
+* _Create_ pour ajouter de nouveaux documents à la collection
+* _Read_ pour trouver des documents existants dans la collection
+* _Update_ pour modifier les documents de la collection
+* _Delete_ pour supprimer des documents de la collection
+
+Ces méthodes sont rattachées à la structure `UserService`, dont l'instance globale est `User`. Cela permet, depuis le reste du programme, et plus spécifiquement dans les _controllers_ où nous en auront besoin, d'appeler directement `User.MyMethod(...)` par exemple.
+
 <!-- guide -->
+
+* Positionne toi à la suite de `model.go`, en dessous de la déclaration de `UserService`
+* _Create_ : Définie la fonction `func (s *UserService) Get(mail string) (UserModel, error)`
+* _Read_ : Définie la fonction `func (s *UserService) Add(user UserModel) error`
+* _Update_ : Définie la fonction `func (s *UserService) Update(mail string, user UserModel) error`
+* _Delete_ : Définie la fonction `func (s *UserService) Delete(mail string) error`
 
 <!-- content -->
 
+### Implémentation des méthodes
+
+Depuis l'intérieur de ces méthodes, puisqu'elles sont rattachées à `UserService`, tu as accès à `s.col` qui est un pointeur vers la collection qui nous intéresse. Pour connaitre toutes les méthodes accessible via le _driver_ mgo, rendez-vous sur la [documentation](https://godoc.org/gopkg.in/mgo.v2) de celui-ci. Voici néanmoins les méthodes dont tu auras besoin :
+
+```go
+user := UserModel{}
+err = s.col.Find(bson.M{"mail": mail}).One(&user)
+
+err = s.col.Insert(user)
+
+err = s.col.Update(bson.M{"mail": mail}, user)
+
+err = s.col.Remove(bson.M{"mail": mail})
+```
+
+Par ailleurs, n'oublie pas, lors de la création d'un document, de lui attribuer un nouvel ID, et de marquer la date de sa création :
+
+```go
+user.ID = bson.NewObjectId()
+user.CreatedAt = time.Now()
+```
+
 <!-- guide -->
+
+* Implémente les quatre méthodes de `UserService`
 
 <!-- content -->
 
+## 3 - Les routes
+
+Nous avons mis en place le serveur ainsi que le modèle de base de données _User_. Il ne manque plus qu'à implémenter le pont entre les deux, à savoir les routes et leurs _controllers_ qui, à partir des requêtes de l'extérieur, interagissent avec le modèle _User_ en conséquences.
+
+### Définition
+
+Les quatre routes (GET, POST, PUT, DELETE) sont rattachées au serveur Echo dans la fonction `newRouter()` :
+
+```go
+...
+e.GET("/", UserGET)
+e.POST("/", UserPOST)
+e.PUT("/", UserPUT)
+e.DELETE("/", UserDELETE)
+```
+
+Chaque définition de route prend en paramètre l'URL de la route (`/` ici) ainsi qu'une fonction de _callback_, qui traite la requête.
+
+Une telle fonction de _callback_, aussi appelée _controller_ possède la signature suivante :
+
+```go
+func callback(c echo.Context) error {
+	...
+}
+```
+
+Nous implémenterons ces _controllers_ plus tard.
+
 <!-- guide -->
+
+* Définis les routes dans `routes.go`
+* Déclare les différents _controllers_ à la suite, ou bien dans un nouveau fichier `controllers.go`
+
+<!-- content -->
+
+### Tests
+
+Suivons les principes du TDD, et implémentons nos tests avant de compléter la logique de notre API.
+
+Il te faut rédiger quatre tests, un par route. La structure du test est simple :
+
+* Remise à zéro la base de données et ajoute les documents nécessaires au test courant
+* Requête au serveur
+* Test du retour serveur
+* Test éventuel du contenu de la base de données
+
+Tu peux définir des _Users_ globaux pour faciliter les tests :
+
+```go
+var johnDoe = UserModel{
+	Name: "John Doe",
+	Mail: "john@doe.fr",
+}
+```
+
+_ProTip_ : Tester son application ne devrait pas affecter la base de donnée de production (ou du moins la base de données utilisée pour le développement). Avec go, il est aisé de savoir si le programme est exécuté en conditions de test ou pas, en vérifiant la présence du flag `test.v`. Dès lors, il suffit de changer de nom de base de de données comme ceci :
+
+```go
+DBName := "user-db"
+if flag.Lookup("test.v") != nil {
+	DBName = "user-db_test"
+}
+```
+
+<!-- guide -->
+
+* Change de nom de base de données si le programme est lancé en conditions de tests
+* Définis des _Users_ de test
+* Implémente des fonctions de tests en s'inspirant du test simple effectué en première partie
+
+<!-- content -->
+
+### Implémentation
+
+Chaque _controller_ prend en paramètre un contexte `c echo.Context`.
+Ce contexte permet d'accéder au contenu de la requête :
+
+```go
+// Access query params
+mail := c.QueryParam("mail")
+
+// Put the query body into a struct
+var s MyStruct
+if err := c.Bind(&s); err != nil {
+	return err
+}
+```
+
+Mais également de définir la réponse du serveur :
+
+```go
+// Respond with string
+return c.String(200, "Hello, World!")
+
+// Respond with JSON
+return c.JSON(200, user)
+
+// Respond with status code only
+return c.NoContent(401)
+```
+
+<!-- guide -->
+
+* Code le contenu des _controllers_ en utilisant les fonctions mises à disposition par Echo et les méthodes de `User`
+* Teste ton implémentation au fur et à mesure grâce aux tests rédigés précédemment
+
+<!-- content -->
+
+### Essai grandeur nature
+
+Il t'est désormais possible d'interagir avec l'API depuis ton navigateur ou Postman.
+
+Tu peux également déployer ce serveur très simplement sur une VM ou une machine physique en construisant l'exécutable et en le copiant sur la machine de destination.
